@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:background="@color/white">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="@dimen/page_edge">
+        <LinearLayout android:layout_width="match_parent" android:layout_height="56dp" android:gravity="center_vertical">
+            <com.google.android.material.button.MaterialButton android:id="@+id/back_button"
+                style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="48dp" android:layout_height="48dp"
+                android:contentDescription="@string/back" android:text="‹" android:textColor="@color/navy" android:textSize="36sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings"
+                android:textColor="@color/navy" android:textSize="@dimen/text_title" android:textStyle="bold" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="20dp"
+            android:background="@drawable/bg_card" android:orientation="vertical">
+            <TextView android:id="@+id/font_row" android:layout_width="match_parent" android:layout_height="64dp"
+                android:gravity="center_vertical" android:minHeight="48dp" android:paddingHorizontal="16dp"
+                android:text="字体大小                                      大  ›" android:textColor="@color/navy" android:textSize="18sp" />
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border" />
+            <TextView android:id="@+id/mode_row" android:layout_width="match_parent" android:layout_height="64dp"
+                android:gravity="center_vertical" android:minHeight="48dp" android:paddingHorizontal="16dp"
+                android:text="视觉模式                         蓝底白字  ›" android:textColor="@color/navy" android:textSize="18sp" />
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/card_gap"
+            android:background="@drawable/bg_card" android:orientation="vertical">
+            <TextView android:layout_width="match_parent" android:layout_height="64dp" android:gravity="center_vertical"
+                android:paddingHorizontal="16dp" android:text="识别语言                         简体中文  ›" android:textColor="@color/navy" android:textSize="18sp" />
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border" />
+            <TextView android:layout_width="match_parent" android:layout_height="64dp" android:gravity="center_vertical"
+                android:paddingHorizontal="16dp" android:text="语音速度                               正常  ›" android:textColor="@color/navy" android:textSize="18sp" />
+        </LinearLayout>
+        <TextView android:layout_width="match_parent" android:layout_height="64dp" android:layout_marginTop="@dimen/card_gap"
+            android:background="@drawable/bg_card" android:gravity="center_vertical" android:paddingHorizontal="16dp"
+            android:text="隐私设置                                             ›" android:textColor="@color/navy" android:textSize="18sp" />
+        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="@dimen/card_gap"
+            android:background="@drawable/bg_card" android:orientation="vertical" android:padding="16dp">
+            <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/auto_read_switch"
+                android:layout_width="match_parent" android:layout_height="64dp" android:text="自动朗读\n识别后自动朗读全文"
+                android:textColor="@color/navy" android:textSize="18sp" app:useMaterialThemeColors="true" />
+            <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border" />
+            <com.google.android.material.switchmaterial.SwitchMaterial android:id="@+id/save_history_switch"
+                android:layout_width="match_parent" android:layout_height="64dp" android:text="保存识别历史\n在本地保存识别内容"
+                android:textColor="@color/navy" android:textSize="18sp" app:useMaterialThemeColors="true" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

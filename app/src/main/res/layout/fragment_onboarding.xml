@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/white" android:orientation="vertical"
+    android:paddingHorizontal="@dimen/page_edge" android:paddingVertical="32dp">
+
+    <Space android:layout_width="1dp" android:layout_height="0dp" android:layout_weight="1" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/onboarding_title" android:textColor="@color/navy"
+        android:textSize="36sp" android:textStyle="bold" />
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="16dp" android:lineSpacingExtra="8dp"
+        android:text="@string/onboarding_body" android:textColor="@color/navy" android:textSize="18sp" />
+
+    <FrameLayout android:layout_width="200dp" android:layout_height="200dp"
+        android:layout_gravity="center_horizontal" android:layout_marginTop="36dp"
+        android:background="@drawable/bg_card">
+        <TextView android:layout_width="match_parent" android:layout_height="match_parent"
+            android:gravity="center" android:text="文" android:textColor="@color/navy"
+            android:textSize="96sp" android:textStyle="bold" />
+        <ImageView android:layout_width="64dp" android:layout_height="64dp"
+            android:layout_gravity="bottom|end" android:background="@drawable/bg_round_blue"
+            android:contentDescription="@string/speak" android:padding="18dp" android:src="@drawable/ic_speak"
+            app:tint="@color/white" />
+    </FrameLayout>
+    <Space android:layout_width="1dp" android:layout_height="0dp" android:layout_weight="1" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/start_button" android:layout_width="match_parent"
+        android:layout_height="@dimen/primary_button_height" android:text="@string/start_using"
+        android:textSize="@dimen/text_button" app:cornerRadius="14dp" />
+</LinearLayout>

@@ -1,0 +1,14 @@
+{
+  "app": "清阅 Low Vision Reader",
+  "colors": {
+    "navy": "#0B2E59",
+    "primaryBlue": "#2979FF",
+    "white": "#FFFFFF",
+    "blackModeBackground": "#000000",
+    "yellowModeBackground": "#FFD54F"
+  },
+  "spacingDp": [8, 12, 16, 24, 32],
+  "radiiDp": {"card": 16, "button": 14, "chip": 12},
+  "touchTargetDp": 48,
+  "typeSp": {"body": 18, "button": 20, "title": 28, "readingDefault": 48}
+}

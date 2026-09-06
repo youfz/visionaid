@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="page_edge">24dp</dimen>
+    <dimen name="card_gap">12dp</dimen>
+    <dimen name="section_gap">24dp</dimen>
+    <dimen name="card_radius">16dp</dimen>
+    <dimen name="button_radius">14dp</dimen>
+    <dimen name="touch_target">48dp</dimen>
+    <dimen name="primary_button_height">56dp</dimen>
+    <dimen name="text_body">18sp</dimen>
+    <dimen name="text_button">20sp</dimen>
+    <dimen name="text_title">28sp</dimen>
+    <dimen name="text_reading">48sp</dimen>
+</resources>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/navy_dark" android:orientation="vertical">
+
+    <FrameLayout android:layout_width="match_parent" android:layout_height="0dp" android:layout_weight="1"
+        android:background="#7E756D" android:contentDescription="@string/camera_placeholder">
+        <TextView android:layout_width="wrap_content" android:layout_height="48dp"
+            android:layout_gravity="top|center_horizontal" android:layout_marginTop="24dp"
+            android:background="@drawable/bg_navy" android:gravity="center" android:paddingHorizontal="16dp"
+            android:text="@string/align_text_area" android:textColor="@color/white" android:textSize="18sp" />
+        <TextView android:layout_width="280dp" android:layout_height="360dp"
+            android:layout_gravity="center" android:background="@drawable/bg_camera_frame"
+            android:gravity="center" android:lineSpacingExtra="12dp"
+            android:text="春　晓\n\n春眠不觉晓，\n处处闻啼鸟。\n夜来风雨声，\n花落知多少。"
+            android:textColor="@color/navy" android:textSize="24sp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/capture_button"
+            android:layout_width="80dp" android:layout_height="80dp" android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="16dp" android:contentDescription="@string/enhance"
+            android:text="" app:backgroundTint="@color/white" app:cornerRadius="40dp"
+            app:strokeColor="@color/primary_blue" app:strokeWidth="4dp" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/gallery_button"
+            style="@style/Widget.MaterialComponents.Button.Icon" android:layout_width="56dp" android:layout_height="56dp"
+            android:layout_gravity="bottom|end" android:layout_marginEnd="24dp" android:layout_marginBottom="28dp"
+            android:contentDescription="@string/gallery" android:text="" app:cornerRadius="16dp"
+            app:icon="@drawable/ic_gallery" app:iconTint="@color/white" />
+        <ProgressBar android:id="@+id/recognizing_progress" android:layout_width="56dp"
+            android:layout_height="56dp" android:layout_gravity="center" android:visibility="gone" />
+    </FrameLayout>
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="104dp"
+        android:background="@color/navy" android:gravity="center" android:orientation="horizontal"
+        android:paddingHorizontal="8dp">
+        <com.google.android.material.button.MaterialButton android:id="@+id/enhance_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="0dp" android:layout_height="64dp"
+            android:layout_weight="1" android:text="@string/enhance" android:textColor="@color/white"
+            app:icon="@drawable/ic_enhance" app:iconGravity="textTop" app:iconTint="@color/white" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/ocr_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="0dp" android:layout_height="64dp"
+            android:layout_weight="1" android:text="@string/ocr" android:textColor="@color/white"
+            app:icon="@drawable/ic_ocr" app:iconGravity="textTop" app:iconTint="@color/white" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/speak_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="0dp" android:layout_height="64dp"
+            android:layout_weight="1" android:text="@string/speak" android:textColor="@color/white"
+            app:icon="@drawable/ic_speak" app:iconGravity="textTop" app:iconTint="@color/white" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/settings_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="0dp" android:layout_height="64dp"
+            android:layout_weight="1" android:text="@string/settings" android:textColor="@color/white"
+            app:icon="@drawable/ic_settings" app:iconGravity="textTop" app:iconTint="@color/white" />
+    </LinearLayout>
+</LinearLayout>
