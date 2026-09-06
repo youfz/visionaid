@@ -19,6 +19,11 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val apiBaseUrl = providers.gradleProperty("VISIONAID_API_BASE_URL")
+            .orElse("https://api.example.com/")
+            .get()
+        buildConfigField("String", "API_BASE_URL", "\"${apiBaseUrl.trimEnd('/')}/\"")
     }
 
     buildTypes {
@@ -40,6 +45,7 @@ android {
     buildFeatures {
         // 为每个 XML 布局生成类型安全的 Binding 类，替代 findViewById。
         viewBinding = true
+        buildConfig = true
     }
     packaging {
         resources {
@@ -64,6 +70,8 @@ dependencies {
     // 网络请求与 JSON 反序列化。
     implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging.interceptor)
 
     // 本地 JVM 测试、协程调度测试和可控 HTTP 测试服务。
     testImplementation(libs.junit)
