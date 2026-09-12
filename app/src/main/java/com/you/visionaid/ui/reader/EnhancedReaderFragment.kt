@@ -1,7 +1,6 @@
 package com.you.visionaid.ui.reader
 
 import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +21,7 @@ import com.you.visionaid.viewmodel.ReadingUiState
 import com.you.visionaid.viewmodel.ReadingViewModel
 import kotlinx.coroutines.launch
 
-/** 大字增强阅读页，实时响应字号与四种视觉模式。 */
+/** 大字增强阅读页，实时响应字号与视觉模式。 */
 class EnhancedReaderFragment : Fragment() {
     private var _binding: FragmentEnhancedReaderBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -50,7 +49,12 @@ class EnhancedReaderFragment : Fragment() {
                 binding.readerSpeakButton.setText(R.string.continue_reading)
             } else {
                 // Android TTS 没有原生续读位置接口，基础版本从当前文本开头继续。
-                speech.speak(viewModel.uiState.value.text)
+                val readingState = viewModel.uiState.value
+                speech.speak(
+                    readingState.text,
+                    readingState.recognitionLanguage,
+                    readingState.speechSpeed,
+                )
                 binding.readerSpeakButton.setText(R.string.pause)
             }
             isSpeaking = !isSpeaking
@@ -65,16 +69,12 @@ class EnhancedReaderFragment : Fragment() {
     private fun render(state: ReadingUiState) {
         binding.readingText.text = state.text
         binding.readingText.textSize = state.fontSizeSp.toFloat()
-        val (background, foreground) = when (state.mode) {
-            ImageEnhanceMode.ORIGINAL -> Color.WHITE to Color.rgb(11, 46, 89)
-            ImageEnhanceMode.BLACK_WHITE -> Color.BLACK to Color.WHITE
-            ImageEnhanceMode.BLUE_WHITE -> Color.rgb(11, 46, 89) to Color.WHITE
-            ImageEnhanceMode.YELLOW_BLACK -> Color.rgb(255, 213, 79) to Color.BLACK
-        }
+        val background = state.mode.backgroundColor
+        val foreground = state.mode.foregroundColor
         binding.readerRoot.setBackgroundColor(background)
         binding.readingText.setTextColor(foreground)
         binding.readerTitle.setTextColor(foreground)
-        binding.backButton.setTextColor(foreground)
+        binding.backButton.iconTint = ColorStateList.valueOf(foreground)
         binding.changeModeButton.setTextColor(foreground)
         binding.changeModeButton.strokeColor = ColorStateList.valueOf(foreground)
     }

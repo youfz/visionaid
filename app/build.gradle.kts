@@ -15,6 +15,10 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        ndk {
+            abiFilters += "arm64-v8a"
+        }
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -48,6 +52,10 @@ android {
         buildConfig = true
     }
     packaging {
+        jniLibs {
+            useLegacyPackaging = true
+            pickFirsts += "lib/arm64-v8a/libc++_shared.so"
+        }
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
@@ -55,6 +63,11 @@ android {
 }
 
 dependencies {
+    // EyeAlgo R13 客户测试版：Core 0.4.11 与 Enhance 0.4.7 必须配套使用。
+    implementation(files("libs/eye-algo-core-0.4.11-release.aar"))
+    implementation(files("libs/eye-algo-enhance-0.4.7-release.aar"))
+    implementation(files("libs/eye-algo-ocr-0.4.9-release.aar"))
+
     // AndroidX 生命周期、Activity 与列表 UI。
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
@@ -65,6 +78,8 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.recyclerview)
+    implementation(libs.androidx.constraintlayout)
+    implementation(libs.androidx.exifinterface)
     implementation(libs.material)
 
     // 网络请求与 JSON 反序列化。

@@ -12,5 +12,5 @@ import com.you.visionaid.core.di.AppContainer
 class VisionAidApplication : Application() {
 
     /** 应用级依赖容器，在 Application 创建时初始化。 */
-    val appContainer: AppContainer by lazy { AppContainer() }
+    val appContainer: AppContainer by lazy { AppContainer(this) }
 }

@@ -42,7 +42,14 @@ class OcrResultFragment : Fragment() {
         binding.recognizeAgainButton.setOnClickListener { findNavController().navigateUp() }
         binding.decreaseButton.setOnClickListener { viewModel.decreaseFont() }
         binding.increaseButton.setOnClickListener { viewModel.increaseFont() }
-        binding.readAllButton.setOnClickListener { speech.speak(viewModel.uiState.value.text) }
+        binding.readAllButton.setOnClickListener {
+            val readingState = viewModel.uiState.value
+            speech.speak(
+                readingState.text,
+                readingState.recognitionLanguage,
+                readingState.speechSpeed,
+            )
+        }
         binding.copyButton.setOnClickListener {
             val clipboard = requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.recognition_result), viewModel.uiState.value.text))

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 1080x2400 px @3x maps to the 360x800dp design baseline. -->
+    <dimen name="page_edge">24dp</dimen>
+    <dimen name="screen_vertical_edge">32dp</dimen>
+    <dimen name="camera_scan_edge">40dp</dimen>
+</resources>

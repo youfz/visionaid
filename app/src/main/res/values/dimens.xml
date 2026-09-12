@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="page_edge">24dp</dimen>
+    <!-- Compact defaults target 320-359dp wide phones. The 360dp design baseline overrides this value. -->
+    <dimen name="page_edge">16dp</dimen>
     <dimen name="card_gap">12dp</dimen>
     <dimen name="section_gap">24dp</dimen>
     <dimen name="card_radius">16dp</dimen>
@@ -11,4 +12,11 @@
     <dimen name="text_button">20sp</dimen>
     <dimen name="text_title">28sp</dimen>
     <dimen name="text_reading">48sp</dimen>
+    <dimen name="screen_vertical_edge">24dp</dimen>
+    <dimen name="content_padding">16dp</dimen>
+    <dimen name="toolbar_min_height">88dp</dimen>
+    <dimen name="settings_row_min_height">64dp</dimen>
+    <dimen name="camera_scan_max_width">280dp</dimen>
+    <dimen name="camera_scan_edge">32dp</dimen>
+    <dimen name="onboarding_art_size">200dp</dimen>
 </resources>

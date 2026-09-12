@@ -4,6 +4,15 @@
 
     <!-- Retrofit 访问远程文章接口所需的网络权限。 -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <!-- 优先使用外接相机，没有外接相机时允许回退到设备后摄。 -->
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="false" />
+    <uses-feature
+        android:name="android.hardware.camera.external"
+        android:required="false" />
 
     <!-- 使用自定义 Application 持有应用级手动依赖容器。 -->
     <application

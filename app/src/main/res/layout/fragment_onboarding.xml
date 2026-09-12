@@ -1,32 +1,84 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/white" android:orientation="vertical"
-    android:paddingHorizontal="@dimen/page_edge" android:paddingVertical="32dp">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:fillViewport="true"
+    android:overScrollMode="ifContentScrolls">
 
-    <Space android:layout_width="1dp" android:layout_height="0dp" android:layout_weight="1" />
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:text="@string/onboarding_title" android:textColor="@color/navy"
-        android:textSize="36sp" android:textStyle="bold" />
-    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-        android:layout_marginTop="16dp" android:lineSpacingExtra="8dp"
-        android:text="@string/onboarding_body" android:textColor="@color/navy" android:textSize="18sp" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingHorizontal="@dimen/page_edge"
+        android:paddingVertical="@dimen/screen_vertical_edge">
 
-    <FrameLayout android:layout_width="200dp" android:layout_height="200dp"
-        android:layout_gravity="center_horizontal" android:layout_marginTop="36dp"
-        android:background="@drawable/bg_card">
-        <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-            android:gravity="center" android:text="文" android:textColor="@color/navy"
-            android:textSize="96sp" android:textStyle="bold" />
-        <ImageView android:layout_width="64dp" android:layout_height="64dp"
-            android:layout_gravity="bottom|end" android:background="@drawable/bg_round_blue"
-            android:contentDescription="@string/speak" android:padding="18dp" android:src="@drawable/ic_speak"
-            app:tint="@color/white" />
-    </FrameLayout>
-    <Space android:layout_width="1dp" android:layout_height="0dp" android:layout_weight="1" />
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/start_button" android:layout_width="match_parent"
-        android:layout_height="@dimen/primary_button_height" android:text="@string/start_using"
-        android:textSize="@dimen/text_button" app:cornerRadius="14dp" />
-</LinearLayout>
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/onboarding_title"
+            android:textColor="@color/navy"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:lineSpacingExtra="8dp"
+            android:text="@string/onboarding_body"
+            android:textColor="@color/navy"
+            android:textSize="@dimen/text_body" />
+
+        <FrameLayout
+            android:layout_width="@dimen/onboarding_art_size"
+            android:layout_height="@dimen/onboarding_art_size"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="36dp"
+            android:background="@drawable/bg_card">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:autoSizeMaxTextSize="96sp"
+                android:autoSizeMinTextSize="48sp"
+                android:autoSizeStepGranularity="4sp"
+                android:autoSizeTextType="uniform"
+                android:gravity="center"
+                android:text="@string/onboarding_character"
+                android:textColor="@color/navy"
+                android:textSize="96sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+                android:layout_gravity="bottom|end"
+                android:background="@drawable/bg_round_blue"
+                android:contentDescription="@string/speak"
+                android:padding="18dp"
+                android:src="@drawable/ic_speak"
+                app:tint="@color/white" />
+        </FrameLayout>
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/start_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/primary_button_height"
+            android:text="@string/start_using"
+            android:textSize="@dimen/text_button"
+            app:cornerRadius="14dp" />
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

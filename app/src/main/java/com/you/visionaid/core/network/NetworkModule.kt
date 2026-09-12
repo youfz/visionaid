@@ -1,6 +1,7 @@
 package com.you.visionaid.core.network
 
 import com.you.visionaid.BuildConfig
+import com.you.visionaid.MyBuildConfig
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -13,12 +14,12 @@ object NetworkModule {
     private const val TIMEOUT_SECONDS = 30L
 
     fun createHttpClient(
-        enableLogging: Boolean = BuildConfig.DEBUG,
+        enableLogging: Boolean = MyBuildConfig.DEBUG,
     ): OkHttpClient {
         val commonHeaders = Interceptor { chain ->
             val request = chain.request().newBuilder()
                 .header("Accept", "application/json")
-                .header("User-Agent", "VisionAid-Android/${BuildConfig.VERSION_NAME}")
+                .header("User-Agent", "VisionAid-Android/${MyBuildConfig.VERSION_NAME}")
                 .build()
             chain.proceed(request)
         }
