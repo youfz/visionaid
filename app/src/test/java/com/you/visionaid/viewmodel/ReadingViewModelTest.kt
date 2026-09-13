@@ -61,6 +61,7 @@ class ReadingViewModelTest {
         assertEquals("识别完成", viewModel.uiState.value.text)
         assertFalse(viewModel.uiState.value.isRecognizing)
         assertTrue(completed)
+        assertEquals(1L, viewModel.uiState.value.recognitionVersion)
     }
 
     @Test
@@ -101,6 +102,18 @@ class ReadingViewModelTest {
         assertEquals(initialText, viewModel.uiState.value.text)
         assertEquals(OcrUiError.RECOGNITION_FAILED, viewModel.uiState.value.ocrError)
         assertFalse(viewModel.uiState.value.isRecognizing)
+    }
+
+    @Test
+    fun `each successful recognition publishes a new result version`() = runTest {
+        val viewModel = ReadingViewModel(FakeEngine("recognized"))
+
+        viewModel.recognize(image()) {}
+        advanceUntilIdle()
+        viewModel.recognize(image()) {}
+        advanceUntilIdle()
+
+        assertEquals(2L, viewModel.uiState.value.recognitionVersion)
     }
 
     private class FakeEngine(private val result: String) : OcrEngine {

@@ -20,19 +20,9 @@
             android:minHeight="56dp"
             android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/back_button"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/back"
-            app:icon="@drawable/ic_back"
-            app:iconTint="@color/navy" />
-
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="@string/settings"
                 android:textColor="@color/navy"
                 android:textSize="@dimen/text_title"

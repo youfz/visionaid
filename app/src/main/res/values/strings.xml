@@ -93,4 +93,10 @@
     <string name="yellow_black_option">黄底黑字\n温和护眼，易于阅读</string>
     <string name="auto_read_option">自动朗读\n识别后自动朗读全文</string>
     <string name="save_history_option">保存识别历史\n在本地保存识别内容</string>
+    <string name="retake">重拍</string>
+    <string name="recognize_text">识别文字</string>
+    <string name="zoom_level">当前缩放倍率</string>
+    <string name="zoom_default">1.0×</string>
+    <string name="zoom_format">%1$.1f×</string>
+    <string name="focus_point">对焦位置</string>
 </resources>

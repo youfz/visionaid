@@ -1,6 +1,7 @@
 package com.you.visionaid.data.camera
 
 import android.hardware.camera2.CameraCharacteristics
+import android.hardware.camera2.CaptureRequest
 import android.view.Surface
 import com.you.visionaid.data.camera.Camera2EnhanceController.Companion.CameraCandidate
 import com.you.visionaid.data.camera.Camera2EnhanceController.Companion.PreviewDimensions
@@ -120,8 +121,8 @@ class Camera2EnhanceControllerTest {
 
     @Test
     fun `live rendering removes surface texture clockwise quarter turn`() {
-        assertEquals(180, Camera2EnhanceController.liveRenderRotation(270))
-        assertEquals(270, Camera2EnhanceController.liveRenderRotation(0))
+        assertEquals(0, Camera2EnhanceController.liveRenderRotation(270))
+        assertEquals(90, Camera2EnhanceController.liveRenderRotation(0))
     }
 
     @Test
@@ -159,6 +160,41 @@ class Camera2EnhanceControllerTest {
             ),
             Camera2EnhanceController.frameTransform(90),
             0f,
+        )
+    }
+
+    @Test
+    fun `continuous autofocus is preferred with safe fallbacks`() {
+        assertEquals(
+            CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE,
+            Camera2EnhanceController.choosePreviewAfMode(
+                intArrayOf(
+                    CaptureRequest.CONTROL_AF_MODE_AUTO,
+                    CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE,
+                ),
+            ),
+        )
+        assertEquals(
+            CaptureRequest.CONTROL_AF_MODE_AUTO,
+            Camera2EnhanceController.choosePreviewAfMode(
+                intArrayOf(CaptureRequest.CONTROL_AF_MODE_AUTO),
+            ),
+        )
+        assertEquals(
+            CaptureRequest.CONTROL_AF_MODE_OFF,
+            Camera2EnhanceController.choosePreviewAfMode(null),
+        )
+    }
+
+    @Test
+    fun `zoom crop shrinks around the sensor center and clamps below one`() {
+        assertEquals(
+            PreviewDimensions(2000, 1500),
+            Camera2EnhanceController.zoomCropDimensions(4000, 3000, 2f),
+        )
+        assertEquals(
+            PreviewDimensions(4000, 3000),
+            Camera2EnhanceController.zoomCropDimensions(4000, 3000, 0.5f),
         )
     }
 

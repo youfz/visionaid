@@ -1,3 +1,22 @@
-<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24">
-    <path android:fillColor="@android:color/transparent" android:strokeColor="@color/navy" android:strokeWidth="2" android:pathData="M15,12A3,3 0,1 1,9 12A3,3 0,1 1,15 12M12,3L13,6L16,7L19,5L21,8L19,11L20,14L22,16L19,19L16,17L13,18L12,21L8,20L8,17L5,15L2,16L1,12L4,10L4,7L7,5L9,2Z" />
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- 齿轮外轮廓 -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M18.57,9.58L21.88,10.44L21.88,13.56L18.57,14.42L18.36,14.93L20.09,17.88L17.88,20.09L14.93,18.36L14.42,18.57L13.56,21.88L10.44,21.88L9.58,18.57L9.07,18.36L6.12,20.09L3.91,17.88L5.64,14.93L5.43,14.42L2.12,13.56L2.12,10.44L5.43,9.58L5.64,9.07L3.91,6.12L6.12,3.91L9.07,5.64L9.58,5.43L10.44,2.12L13.56,2.12L14.42,5.43L14.93,5.64L17.88,3.91L20.09,6.12L18.36,9.07Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="@color/navy" />
+
+    <!-- 中心圆孔 -->
+    <path
+        android:fillColor="@android:color/transparent"
+        android:pathData="M12,9A3,3 0 1,1 12,15A3,3 0 1,1 12,9Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="@color/navy" />
+
 </vector>

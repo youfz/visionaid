@@ -26,6 +26,7 @@ class OcrResultFragment : Fragment() {
     private var _binding: FragmentOcrResultBinding? = null
     private val binding get() = requireNotNull(_binding)
     private lateinit var speech: TextToSpeechManager
+    private var lastAutoSpokenVersion = -1L
     private val viewModel: ReadingViewModel by activityViewModels {
         val app = requireActivity().application as VisionAidApplication
         ReadingViewModel.Factory(app.appContainer.ocrEngine)
@@ -38,6 +39,7 @@ class OcrResultFragment : Fragment() {
 
     override fun onViewCreated(view: View, state: Bundle?) {
         speech = TextToSpeechManager(requireContext())
+        lastAutoSpokenVersion = state?.getLong(KEY_AUTO_SPOKEN_VERSION, -1L) ?: -1L
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
         binding.recognizeAgainButton.setOnClickListener { findNavController().navigateUp() }
         binding.decreaseButton.setOnClickListener { viewModel.decreaseFont() }
@@ -61,14 +63,31 @@ class OcrResultFragment : Fragment() {
                     binding.resultText.text = it.text
                     binding.resultText.textSize = it.fontSizeSp.toFloat()
                     binding.fontSizeValue.text = it.fontSizeSp.toString()
+                    if (
+                        it.autoSpeak &&
+                        it.recognitionVersion > 0L &&
+                        it.recognitionVersion != lastAutoSpokenVersion
+                    ) {
+                        lastAutoSpokenVersion = it.recognitionVersion
+                        speech.speak(it.text, it.recognitionLanguage, it.speechSpeed)
+                    }
                 }
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putLong(KEY_AUTO_SPOKEN_VERSION, lastAutoSpokenVersion)
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroyView() {
         if (::speech.isInitialized) speech.shutdown()
         _binding = null
         super.onDestroyView()
+    }
+
+    companion object {
+        private const val KEY_AUTO_SPOKEN_VERSION = "auto_spoken_version"
     }
 }

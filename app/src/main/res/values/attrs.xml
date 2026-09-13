@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="VisionBottomNavigationView">
+        <attr name="navigationEnhanceText" format="string" />
+        <attr name="navigationSettingsText" format="string" />
+        <attr name="navigationTextSize" format="dimension" />
+        <attr name="navigationFontFamily" format="reference|string" />
+        <attr name="navigationItemTint" format="color|reference" />
+        <attr name="navigationItemHorizontalMargin" format="dimension" />
+        <attr name="navigationItemVerticalMargin" format="dimension" />
+        <attr name="navigationIconTextSpacing" format="dimension" />
+        <attr name="navigationIconSize" format="dimension" />
+    </declare-styleable>
+</resources>

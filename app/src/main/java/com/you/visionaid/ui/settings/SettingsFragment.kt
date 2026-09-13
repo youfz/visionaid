@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.navigation.fragment.findNavController
 import com.you.visionaid.R
 import com.you.visionaid.VisionAidApplication
 import com.you.visionaid.databinding.FragmentSettingsBinding
@@ -37,7 +36,6 @@ class SettingsFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, state: Bundle?) {
-        binding.backButton.setOnClickListener { findNavController().navigateUp() }
         binding.modeRow.setOnClickListener { VisualModeBottomSheet().show(childFragmentManager, "mode") }
         binding.fontRow.setOnClickListener { showFontSizeDialog() }
         binding.languageRow.setOnClickListener { showLanguageDialog() }

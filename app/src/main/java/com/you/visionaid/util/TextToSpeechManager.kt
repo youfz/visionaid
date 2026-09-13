@@ -13,33 +13,45 @@ class TextToSpeechManager(context: Context) : TextToSpeech.OnInitListener {
     private var lastText = ""
     private var lastLanguage = RecognitionLanguage.SIMPLIFIED_CHINESE
     private var lastSpeed = SpeechSpeed.NORMAL
+    private var pendingSpeak = false
 
     override fun onInit(status: Int) {
         ready = status == TextToSpeech.SUCCESS
-        if (ready) tts.language = Locale.SIMPLIFIED_CHINESE
+        if (ready) {
+            tts.language = Locale.SIMPLIFIED_CHINESE
+            if (pendingSpeak && lastText.isNotBlank()) speakNow()
+        }
     }
 
     fun speak(text: String, language: RecognitionLanguage, speed: SpeechSpeed) {
         lastText = text
         lastLanguage = language
         lastSpeed = speed
-        if (ready) {
-            tts.language = when (language) {
-                RecognitionLanguage.SIMPLIFIED_CHINESE -> Locale.SIMPLIFIED_CHINESE
-                RecognitionLanguage.ENGLISH -> Locale.US
-            }
-            tts.setSpeechRate(speed.rate)
-            tts.speak(text, TextToSpeech.QUEUE_FLUSH, null, "qingyue_reading")
-        }
+        pendingSpeak = text.isNotBlank()
+        if (ready && pendingSpeak) speakNow()
     }
 
-    fun pause() = tts.stop()
+    private fun speakNow() {
+        tts.language = when (lastLanguage) {
+            RecognitionLanguage.SIMPLIFIED_CHINESE -> Locale.SIMPLIFIED_CHINESE
+            RecognitionLanguage.ENGLISH -> Locale.US
+        }
+        tts.setSpeechRate(lastSpeed.rate)
+        tts.speak(lastText, TextToSpeech.QUEUE_FLUSH, null, "qingyue_reading")
+        pendingSpeak = false
+    }
+
+    fun pause() {
+        pendingSpeak = false
+        tts.stop()
+    }
 
     fun resume() {
         if (lastText.isNotBlank()) speak(lastText, lastLanguage, lastSpeed)
     }
 
     fun shutdown() {
+        pendingSpeak = false
         tts.stop()
         tts.shutdown()
     }

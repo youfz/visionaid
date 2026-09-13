@@ -24,6 +24,7 @@ data class ReadingUiState(
     val speechSpeed: SpeechSpeed = SpeechSpeed.NORMAL,
     val isRecognizing: Boolean = false,
     val ocrError: OcrUiError? = null,
+    val recognitionVersion: Long = 0L,
     val autoSpeak: Boolean = true,
     val saveHistory: Boolean = true,
 ) {
@@ -74,7 +75,13 @@ class ReadingViewModel(private val ocrEngine: OcrEngine) : ViewModel() {
                 if (result.isBlank()) {
                     _uiState.update { it.copy(isRecognizing = false, ocrError = OcrUiError.NO_TEXT) }
                 } else {
-                    _uiState.update { it.copy(text = result, isRecognizing = false) }
+                    _uiState.update {
+                        it.copy(
+                            text = result,
+                            isRecognizing = false,
+                            recognitionVersion = it.recognitionVersion + 1L,
+                        )
+                    }
                     onComplete()
                 }
             } catch (cancelled: CancellationException) {

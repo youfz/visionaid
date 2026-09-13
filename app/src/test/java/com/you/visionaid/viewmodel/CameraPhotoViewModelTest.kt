@@ -36,15 +36,15 @@ class CameraPhotoViewModelTest {
     }
 
     @Test
-    fun `raw mode bypasses enhancer and clear returns to live state`() = runTest {
+    fun `clear photo returns to live state`() = runTest {
         val enhancer = RecordingEnhancer()
         val viewModel = CameraPhotoViewModel(enhancer, dispatcherRule.dispatcher)
 
-        viewModel.setSource(image(25), ImageEnhanceMode.RAW_VIDEO)
+        viewModel.setSource(image(25), ImageEnhanceMode.ORIGINAL)
         advanceUntilIdle()
 
-        assertTrue(enhancer.inputs.isEmpty())
-        assertEquals(25, viewModel.uiState.value.image?.pixels?.first()?.toInt())
+        assertEquals(listOf(25), enhancer.inputs)
+        assertEquals(26, viewModel.uiState.value.image?.pixels?.first()?.toInt())
         viewModel.clearPhoto()
         assertNull(viewModel.uiState.value.image)
     }

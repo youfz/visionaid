@@ -3,11 +3,11 @@
 
     <style name="Theme.VisionAid" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/primary_blue</item>
-        <item name="colorPrimaryVariant">@color/navy</item>
+        <item name="colorPrimaryVariant">@color/camera_bottom_bar</item>
         <item name="colorSecondary">@color/primary_blue</item>
         <item name="android:fontFamily">sans</item>
         <item name="android:windowLightStatusBar">false</item>
-        <item name="android:statusBarColor">@color/navy</item>
-        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:statusBarColor">@color/camera_bottom_bar</item>
+        <item name="android:navigationBarColor">@color/camera_bottom_bar</item>
     </style>
 </resources>

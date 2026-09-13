@@ -2,15 +2,13 @@ package com.you.visionaid.domain
 
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class ImageEnhanceModeTest {
     @Test
-    fun `only raw video bypasses camera enhancement`() {
-        assertEquals(
-            listOf(ImageEnhanceMode.RAW_VIDEO),
-            ImageEnhanceMode.entries.filter(ImageEnhanceMode::usesRawCameraStream),
-        )
+    fun `all selectable modes use the enhancement preview`() {
+        assertTrue(ImageEnhanceMode.entries.none(ImageEnhanceMode::usesRawCameraStream))
     }
 
     @Test

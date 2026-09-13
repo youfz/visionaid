@@ -1,10 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/nav_host_fragment"
-    android:name="androidx.navigation.fragment.NavHostFragment"
-    app:defaultNavHost="true"
-    android:tag="nav_host"
-    app:navGraph="@navigation/nav_graph"
-    xmlns:app="http://schemas.android.com/apk/res-auto" />
+    android:orientation="vertical">
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/nav_host_fragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:tag="nav_host"
+        app:defaultNavHost="true"
+        app:navGraph="@navigation/nav_graph" />
+
+    <com.you.visionaid.ui.widget.VisionBottomNavigationView
+        android:id="@+id/main_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/camera_bottom_bar"
+        app:navigationEnhanceText="@string/enhance"
+        app:navigationFontFamily="sans"
+        app:navigationItemHorizontalMargin="0dp"
+        app:navigationItemVerticalMargin="8dp"
+        app:navigationSettingsText="@string/settings"
+        app:navigationTextSize="16sp" />
+</LinearLayout>

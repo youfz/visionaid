@@ -19,4 +19,11 @@
     <dimen name="camera_scan_max_width">280dp</dimen>
     <dimen name="camera_scan_edge">32dp</dimen>
     <dimen name="onboarding_art_size">200dp</dimen>
+    <dimen name="bottom_navigation_text_size">16sp</dimen>
+    <dimen name="bottom_navigation_icon_size">28dp</dimen>
+    <dimen name="bottom_navigation_icon_text_spacing">4dp</dimen>
+    <dimen name="bottom_navigation_item_horizontal_margin">0dp</dimen>
+    <dimen name="bottom_navigation_item_vertical_margin">8dp</dimen>
+
+    <dimen name="normal_text_size">14sp</dimen>
 </resources>

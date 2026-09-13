@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="navy">#0B2E59</color>
+    <color name="navy">#660B2E59</color>
     <color name="primary_blue">#2979FF</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
@@ -9,4 +9,6 @@
     <color name="border">#D5DCE6</color>
     <color name="text_secondary">#52657A</color>
     <color name="navy_dark">#061E3C</color>
+    <color name="accent_cyan">#74DFFF</color>
+    <color name="camera_bottom_bar">#ED17384C</color>
 </resources>

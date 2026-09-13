@@ -1,6 +1,7 @@
 package com.you.visionaid.ui.camera
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
@@ -8,7 +9,10 @@ import android.graphics.SurfaceTexture
 import android.hardware.camera2.CameraCharacteristics
 import android.os.Bundle
 import android.util.Log
+import android.view.GestureDetector
 import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import android.view.Surface
 import android.view.TextureView
 import android.view.View
@@ -32,7 +36,6 @@ import com.you.visionaid.data.enhance.AndroidImageCodec
 import com.you.visionaid.data.enhance.EyeAlgoOptionsMapper
 import com.you.visionaid.databinding.FragmentCameraBinding
 import com.you.visionaid.domain.ImageEnhanceMode
-import com.you.visionaid.util.TextToSpeechManager
 import com.you.visionaid.viewmodel.CameraPhotoUiState
 import com.you.visionaid.viewmodel.CameraPhotoViewModel
 import com.you.visionaid.viewmodel.OcrUiError
@@ -46,7 +49,6 @@ import kotlinx.coroutines.withContext
 class CameraFragment : Fragment() {
     private var _binding: FragmentCameraBinding? = null
     private val binding get() = requireNotNull(_binding)
-    private lateinit var speech: TextToSpeechManager
     private lateinit var cameraController: Camera2EnhanceController
     private lateinit var imageCodec: AndroidImageCodec
     @Volatile
@@ -57,6 +59,8 @@ class CameraFragment : Fragment() {
     private var sourceHeight = 0
     private var sourceRotationDegrees = 0
     private var mirrorPreview = false
+    private var maxZoomRatio = 1f
+    private var currentZoomRatio = 1f
     @Volatile
     private var enhancedFrameTransform = Camera2EnhanceController.frameTransform(0)
     private var renderedMode: ImageEnhanceMode? = null
@@ -96,7 +100,6 @@ class CameraFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, state: Bundle?) {
-        speech = TextToSpeechManager(requireContext())
         imageCodec = AndroidImageCodec(requireContext().contentResolver)
         cameraController = Camera2EnhanceController(
             requireContext().applicationContext,
@@ -107,6 +110,7 @@ class CameraFragment : Fragment() {
                     height: Int,
                     sensorOrientation: Int,
                     lensFacing: Int?,
+                    maxZoomRatio: Float,
                 ) {
                     sourceWidth = width
                     sourceHeight = height
@@ -116,6 +120,10 @@ class CameraFragment : Fragment() {
                         displayRotation = binding.root.display?.rotation ?: Surface.ROTATION_0,
                     )
                     mirrorPreview = lensFacing == CameraCharacteristics.LENS_FACING_FRONT
+                    this@CameraFragment.maxZoomRatio = maxZoomRatio.coerceAtLeast(1f)
+                    currentZoomRatio = currentZoomRatio.coerceIn(1f, this@CameraFragment.maxZoomRatio)
+                    cameraController.setZoomRatio(currentZoomRatio)
+                    binding.zoomValue.text = getString(R.string.zoom_format, currentZoomRatio)
                     updatePreviewGeometry()
                 }
 
@@ -128,17 +136,17 @@ class CameraFragment : Fragment() {
             },
         )
         configureEnhancePreview()
+        configurePreviewGestures()
 //        configureRawPreview()
         binding.enhanceButton.setOnClickListener { VisualModeBottomSheet().show(childFragmentManager, "mode") }
-        binding.captureButton.setOnClickListener { onCaptureClicked() }
-        binding.settingsButton.setOnClickListener { findNavController().navigate(R.id.settingsFragment) }
-        binding.speakButton.setOnClickListener { speakCurrentText() }
+        binding.captureButton.setOnClickListener { capturePhoto() }
+        binding.retakeButton.setOnClickListener { photoViewModel.clearPhoto() }
         binding.galleryButton.setOnClickListener {
             photoPicker.launch(
                 PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly),
             )
         }
-        binding.ocrButton.setOnClickListener { recognize() }
+        binding.recognizeTextButton.setOnClickListener { recognize() }
         binding.cameraRetryButton.setOnClickListener {
             cameraActive = false
             startPreviewIfReady()
@@ -178,6 +186,92 @@ class CameraFragment : Fragment() {
         binding.cameraPreview.setInputSurfaceListener { _, _ ->
             enhanceSurfaceReady = true
             binding.cameraPreview.post(::startPreviewIfReady)
+        }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private fun configurePreviewGestures() {
+        var tapX = Float.NaN
+        var tapY = Float.NaN
+        binding.cameraPreview.setOnClickListener {
+            if (!canControlPreview()) return@setOnClickListener
+            val x = tapX.takeUnless(Float::isNaN) ?: binding.cameraPreview.width / 2f
+            val y = tapY.takeUnless(Float::isNaN) ?: binding.cameraPreview.height / 2f
+            tapX = Float.NaN
+            tapY = Float.NaN
+            focusPreviewAt(x, y)
+        }
+        val scaleDetector = ScaleGestureDetector(
+            requireContext(),
+            object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                override fun onScale(detector: ScaleGestureDetector): Boolean {
+                    if (!canControlPreview()) return false
+                    currentZoomRatio = (currentZoomRatio * detector.scaleFactor)
+                        .coerceIn(1f, maxZoomRatio)
+                    cameraController.setZoomRatio(currentZoomRatio)
+                    binding.zoomValue.text = getString(R.string.zoom_format, currentZoomRatio)
+                    return true
+                }
+            },
+        )
+        val tapDetector = GestureDetector(
+            requireContext(),
+            object : GestureDetector.SimpleOnGestureListener() {
+                override fun onDown(event: MotionEvent): Boolean = true
+
+                override fun onSingleTapConfirmed(event: MotionEvent): Boolean {
+                    if (!canControlPreview()) return false
+                    tapX = event.x
+                    tapY = event.y
+                    return binding.cameraPreview.performClick()
+                }
+            },
+        )
+        binding.cameraPreview.setOnTouchListener { _, event ->
+            scaleDetector.onTouchEvent(event)
+            tapDetector.onTouchEvent(event)
+            true
+        }
+    }
+
+    private fun focusPreviewAt(x: Float, y: Float) {
+        val sensorPoint = mapPreviewPointToSensor(
+            touchX = x,
+            touchY = y,
+            viewWidth = binding.cameraPreview.width,
+            viewHeight = binding.cameraPreview.height,
+            sourceWidth = sourceWidth,
+            sourceHeight = sourceHeight,
+            rotationDegrees = Camera2EnhanceController.liveRenderRotation(sourceRotationDegrees),
+            mirrored = mirrorPreview,
+        )
+        cameraController.focusAt(sensorPoint.first, sensorPoint.second)
+        showFocusIndicator(x, y)
+    }
+
+    private fun canControlPreview(): Boolean = cameraActive &&
+        photoViewModel.uiState.value.image == null &&
+        !sourceLoading && !photoProcessing && !ocrRecognizing
+
+    private fun showFocusIndicator(x: Float, y: Float) {
+        binding.focusIndicator.animate().cancel()
+        binding.focusIndicator.apply {
+            alpha = 1f
+            isVisible = true
+            this.x = (x - width / 2f).coerceIn(
+                0f,
+                (binding.cameraPreview.width - width).coerceAtLeast(0).toFloat(),
+            )
+            this.y = (y - height / 2f).coerceIn(
+                0f,
+                (binding.cameraPreview.height - height).coerceAtLeast(0).toFloat(),
+            )
+            animate()
+                .alpha(0f)
+                .setStartDelay(FOCUS_INDICATOR_DELAY_MS)
+                .setDuration(FOCUS_INDICATOR_FADE_MS)
+                .withEndAction { if (_binding != null) isVisible = false }
+                .start()
         }
     }
 
@@ -224,15 +318,7 @@ class CameraFragment : Fragment() {
         }
     }
 
-    private fun onCaptureClicked() {
-        if (photoViewModel.uiState.value.image != null) {
-            photoViewModel.clearPhoto()
-            return
-        }
-        capturePhoto()
-    }
-
-    private fun capturePhoto(onDecoded: ((com.you.visionaid.domain.RgbaImage) -> Unit)? = null) {
+    private fun capturePhoto() {
         if (!cameraActive || sourceLoading) {
             Toast.makeText(requireContext(), R.string.capture_failed, Toast.LENGTH_SHORT).show()
             return
@@ -246,7 +332,6 @@ class CameraFragment : Fragment() {
                     decodeSource(
                         decoder = { imageCodec.decodeJpeg(result.jpegBytes) },
                         errorMessage = R.string.capture_failed,
-                        onDecoded = onDecoded,
                     )
                 }
                 is Camera2EnhanceController.StillCaptureResult.Failure -> {
@@ -269,7 +354,6 @@ class CameraFragment : Fragment() {
     private fun decodeSource(
         decoder: () -> com.you.visionaid.domain.RgbaImage,
         @androidx.annotation.StringRes errorMessage: Int,
-        onDecoded: ((com.you.visionaid.domain.RgbaImage) -> Unit)? = null,
     ) {
         viewLifecycleOwner.lifecycleScope.launch {
             val result = runCatching { withContext(Dispatchers.IO) { decoder() } }
@@ -277,7 +361,6 @@ class CameraFragment : Fragment() {
             setSourceLoading(false)
             result.onSuccess {
                 photoViewModel.setSource(it, viewModel.uiState.value.mode)
-                onDecoded?.invoke(it)
             }.onFailure {
                 Log.e(TAG, "Image decode failed", it)
                 Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
@@ -289,15 +372,16 @@ class CameraFragment : Fragment() {
         if (_binding == null) return
         photoProcessing = state.isProcessing
         updateBusyUi()
-        binding.photoPreview.isVisible = state.image != null
-        binding.captureButton.contentDescription = getString(
-            if (state.image == null) R.string.capture_photo else R.string.back_to_live_camera,
-        )
-        if (state.image == null) {
-            binding.captureButton.icon = null
-        } else {
-            binding.captureButton.setIconResource(R.drawable.ic_back)
-        }
+        val hasPhoto = state.image != null
+        binding.photoPreview.isVisible = hasPhoto
+        binding.liveControls.isVisible = !hasPhoto
+        binding.captureControl.isVisible = !hasPhoto
+        binding.galleryControl.isVisible = !hasPhoto
+        binding.photoActions.isVisible = hasPhoto
+        binding.alignmentHint.isVisible = !hasPhoto
+        binding.zoomValue.isVisible = !hasPhoto
+        binding.scanFrame.isVisible = !hasPhoto
+        if (hasPhoto) binding.focusIndicator.isVisible = false
         val image = state.image
         if (image == null) {
             clearDisplayedPhoto()
@@ -333,7 +417,9 @@ class CameraFragment : Fragment() {
         binding.recognizingProgress.isVisible = busy
         binding.captureButton.isEnabled = !busy
         binding.galleryButton.isEnabled = !busy
-        binding.ocrButton.isEnabled = !busy
+        binding.enhanceButton.isEnabled = !busy
+        binding.retakeButton.isEnabled = !busy
+        binding.recognizeTextButton.isEnabled = !busy
     }
 
     private fun clearDisplayedPhoto() {
@@ -444,18 +530,13 @@ class CameraFragment : Fragment() {
 
     private fun recognize() {
         if (ocrRecognizing || sourceLoading || photoProcessing) return
-        val photo = photoViewModel.sourceSnapshot()
-        if (photo != null) {
-            recognize(photo)
-        } else {
-            capturePhoto(::recognize)
-        }
+        val photo = photoViewModel.sourceSnapshot() ?: return
+        recognize(photo)
     }
 
     private fun recognize(image: com.you.visionaid.domain.RgbaImage) {
         viewModel.recognize(image) {
             if (isAdded) {
-                if (viewModel.uiState.value.autoSpeak) speakCurrentText()
                 findNavController().navigate(R.id.ocrResultFragment)
             }
         }
@@ -468,11 +549,6 @@ class CameraFragment : Fragment() {
         }
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
         viewModel.clearOcrError()
-    }
-
-    private fun speakCurrentText() {
-        val state = viewModel.uiState.value
-        speech.speak(state.text, state.recognitionLanguage, state.speechSpeed)
     }
 
     override fun onResume() {
@@ -504,12 +580,50 @@ class CameraFragment : Fragment() {
         enhanceSurfaceReady = false
         rawSurfaceReady = false
         cameraActive = false
-        if (::speech.isInitialized) speech.shutdown()
         _binding = null
         super.onDestroyView()
     }
 
     companion object {
         private const val TAG = "CameraFragment"
+        private const val FOCUS_INDICATOR_DELAY_MS = 650L
+        private const val FOCUS_INDICATOR_FADE_MS = 250L
+
+        internal fun mapPreviewPointToSensor(
+            touchX: Float,
+            touchY: Float,
+            viewWidth: Int,
+            viewHeight: Int,
+            sourceWidth: Int,
+            sourceHeight: Int,
+            rotationDegrees: Int,
+            mirrored: Boolean,
+        ): Pair<Float, Float> {
+            if (viewWidth <= 0 || viewHeight <= 0 || sourceWidth <= 0 || sourceHeight <= 0) {
+                return 0.5f to 0.5f
+            }
+            val rotated = Camera2EnhanceController.orientedPreviewDimensions(
+                sourceWidth,
+                sourceHeight,
+                rotationDegrees,
+            )
+            val scale = maxOf(
+                viewWidth.toFloat() / rotated.width,
+                viewHeight.toFloat() / rotated.height,
+            )
+            val renderedWidth = rotated.width * scale
+            val renderedHeight = rotated.height * scale
+            var x = ((touchX + (renderedWidth - viewWidth) / 2f) / renderedWidth)
+                .coerceIn(0f, 1f)
+            val y = ((touchY + (renderedHeight - viewHeight) / 2f) / renderedHeight)
+                .coerceIn(0f, 1f)
+            if (mirrored) x = 1f - x
+            return when (rotationDegrees.mod(360)) {
+                90 -> y to (1f - x)
+                180 -> (1f - x) to (1f - y)
+                270 -> (1f - y) to x
+                else -> x to y
+            }
+        }
     }
 }
