@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 data class ReadingUiState(
     val text: String = "春晓\n[唐] 孟浩然\n\n春眠不觉晓，\n处处闻啼鸟。\n夜来风雨声，\n花落知多少。",
     val fontSize: ReadingFontSize = ReadingFontSize.STANDARD,
-    val mode: ImageEnhanceMode = ImageEnhanceMode.BLUE_WHITE,
+    val mode: ImageEnhanceMode = ImageEnhanceMode.ORIGINAL,
     val recognitionLanguage: RecognitionLanguage = RecognitionLanguage.SIMPLIFIED_CHINESE,
     val speechSpeed: SpeechSpeed = SpeechSpeed.NORMAL,
     val isRecognizing: Boolean = false,

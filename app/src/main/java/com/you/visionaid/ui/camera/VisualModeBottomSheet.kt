@@ -17,7 +17,7 @@ import com.you.visionaid.databinding.SheetVisualModeBinding
 import com.you.visionaid.domain.ImageEnhanceMode
 import com.you.visionaid.viewmodel.ReadingViewModel
 
-/** Displays raw camera pass-through and every mode exposed by EyeAlgo Enhance. */
+/** Displays every user-selectable mode exposed by EyeAlgo Enhance. */
 class VisualModeBottomSheet : BottomSheetDialogFragment() {
     private var _binding: SheetVisualModeBinding? = null
     private val binding get() = requireNotNull(_binding)
@@ -50,7 +50,7 @@ private class VisualModeAdapter(
     private val selectedMode: ImageEnhanceMode,
     private val onSelected: (ImageEnhanceMode) -> Unit,
 ) : RecyclerView.Adapter<VisualModeAdapter.ModeViewHolder>() {
-    private val modes = ImageEnhanceMode.entries
+    private val modes = ImageEnhanceMode.entries.filterNot(ImageEnhanceMode::usesRawCameraStream)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ModeViewHolder {
         val binding = ItemVisualModeBinding.inflate(
@@ -91,9 +91,7 @@ private class VisualModeAdapter(
 
 @StringRes
 private fun ImageEnhanceMode.titleResource(): Int = when (this) {
-    ImageEnhanceMode.RAW_VIDEO -> R.string.raw_video
     ImageEnhanceMode.ORIGINAL -> R.string.original_enhance
-    ImageEnhanceMode.GRAYSCALE -> R.string.grayscale_diagnostic
     ImageEnhanceMode.BLACK_WHITE -> R.string.black_white
     ImageEnhanceMode.WHITE_BLACK -> R.string.white_black
     ImageEnhanceMode.BLACK_GREEN -> R.string.black_green
@@ -107,11 +105,11 @@ private fun ImageEnhanceMode.titleResource(): Int = when (this) {
     ImageEnhanceMode.BLUE_YELLOW -> R.string.blue_yellow
     ImageEnhanceMode.YELLOW_BLUE -> R.string.yellow_blue
     ImageEnhanceMode.GREEN_FILTER -> R.string.green_filter
+    ImageEnhanceMode.GRAYSCALE -> R.string.grayscale_diagnostic
 }
 
 @StringRes
 private fun ImageEnhanceMode.descriptionResource(): Int = when (this) {
-    ImageEnhanceMode.RAW_VIDEO -> R.string.raw_video_desc
     ImageEnhanceMode.ORIGINAL -> R.string.original_desc
     ImageEnhanceMode.GRAYSCALE -> R.string.grayscale_diagnostic_desc
     ImageEnhanceMode.GREEN_FILTER -> R.string.green_filter_desc

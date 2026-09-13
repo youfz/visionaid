@@ -8,7 +8,6 @@ object EyeAlgoOptionsMapper {
     fun sdkMode(mode: ImageEnhanceMode): Int {
         require(!mode.usesRawCameraStream) { "Raw video must bypass EyeAlgo processing" }
         return when (mode) {
-            ImageEnhanceMode.RAW_VIDEO -> error("Raw video has no EyeAlgo mode")
             ImageEnhanceMode.ORIGINAL -> ProcessOptions.MODE_FULL_COLOR
             ImageEnhanceMode.GRAYSCALE -> ProcessOptions.MODE_GRAYSCALE
             ImageEnhanceMode.BLACK_WHITE -> ProcessOptions.MODE_WHITE_ON_BLACK

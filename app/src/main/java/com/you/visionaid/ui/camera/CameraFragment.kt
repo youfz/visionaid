@@ -128,7 +128,7 @@ class CameraFragment : Fragment() {
             },
         )
         configureEnhancePreview()
-        configureRawPreview()
+//        configureRawPreview()
         binding.enhanceButton.setOnClickListener { VisualModeBottomSheet().show(childFragmentManager, "mode") }
         binding.captureButton.setOnClickListener { onCaptureClicked() }
         binding.settingsButton.setOnClickListener { findNavController().navigate(R.id.settingsFragment) }
@@ -181,38 +181,38 @@ class CameraFragment : Fragment() {
         }
     }
 
-    private fun configureRawPreview() {
-        binding.rawCameraPreview.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-            override fun onSurfaceTextureAvailable(texture: SurfaceTexture, width: Int, height: Int) {
-                rawSurfaceReady = true
-                updateRawPreviewTransform(binding.rawCameraPreview)
-                binding.rawCameraPreview.post(::startPreviewIfReady)
-            }
-
-            override fun onSurfaceTextureSizeChanged(texture: SurfaceTexture, width: Int, height: Int) {
-                updateRawPreviewTransform(binding.rawCameraPreview)
-            }
-
-            override fun onSurfaceTextureDestroyed(texture: SurfaceTexture): Boolean {
-                rawSurfaceReady = false
-                if (viewModel.uiState.value.mode.usesRawCameraStream) {
-                    cameraActive = false
-                    cameraController.stop()
-                }
-                rawSurface?.release()
-                rawSurface = null
-                return true
-            }
-
-            override fun onSurfaceTextureUpdated(texture: SurfaceTexture) = Unit
-        }
-        rawSurfaceReady = binding.rawCameraPreview.isAvailable
-    }
+//    private fun configureRawPreview() {
+//        binding.rawCameraPreview.surfaceTextureListener = object : TextureView.SurfaceTextureListener {
+//            override fun onSurfaceTextureAvailable(texture: SurfaceTexture, width: Int, height: Int) {
+//                rawSurfaceReady = true
+//                updateRawPreviewTransform(binding.rawCameraPreview)
+//                binding.rawCameraPreview.post(::startPreviewIfReady)
+//            }
+//
+//            override fun onSurfaceTextureSizeChanged(texture: SurfaceTexture, width: Int, height: Int) {
+//                updateRawPreviewTransform(binding.rawCameraPreview)
+//            }
+//
+//            override fun onSurfaceTextureDestroyed(texture: SurfaceTexture): Boolean {
+//                rawSurfaceReady = false
+//                if (viewModel.uiState.value.mode.usesRawCameraStream) {
+//                    cameraActive = false
+//                    cameraController.stop()
+//                }
+//                rawSurface?.release()
+//                rawSurface = null
+//                return true
+//            }
+//
+//            override fun onSurfaceTextureUpdated(texture: SurfaceTexture) = Unit
+//        }
+//        rawSurfaceReady = binding.rawCameraPreview.isAvailable
+//    }
 
     private fun renderPreviewMode(mode: ImageEnhanceMode) {
         val modeChanged = renderedMode != null && renderedMode != mode
         renderedMode = mode
-        binding.rawCameraPreview.isVisible = mode.usesRawCameraStream
+//        binding.rawCameraPreview.isVisible = mode.usesRawCameraStream
         binding.cameraPreview.isVisible = !mode.usesRawCameraStream
         if (!mode.usesRawCameraStream) {
             binding.cameraPreview.setProcessOptions(enhancedOptions(mode))
@@ -365,18 +365,8 @@ class CameraFragment : Fragment() {
             cameraPermission.launch(Manifest.permission.CAMERA)
             return
         }
-        val texture = if (rawMode) {
-            binding.rawCameraPreview.surfaceTexture
-        } else {
-            binding.cameraPreview.inputSurfaceTexture()
-        }
-        val surface = if (rawMode) {
-            texture?.let { rawTexture ->
-                rawSurface?.takeIf { it.isValid } ?: Surface(rawTexture).also { rawSurface = it }
-            }
-        } else {
-            binding.cameraPreview.inputSurface()
-        }
+        val texture = binding.cameraPreview.inputSurfaceTexture()
+        val surface = binding.cameraPreview.inputSurface()
         if (surface == null || texture == null) return
         cameraActive = true
         cameraController.start(surface, texture)
@@ -414,7 +404,7 @@ class CameraFragment : Fragment() {
             Camera2EnhanceController.liveRenderRotation(sourceRotationDegrees),
         )
         cameraBinding.cameraPreview.setSourceSize(oriented.width, oriented.height)
-        updateRawPreviewTransform(cameraBinding.rawCameraPreview)
+//        updateRawPreviewTransform(cameraBinding.rawCameraPreview)
         cameraBinding.cameraPreview.requestRender()
     }
 
@@ -490,7 +480,7 @@ class CameraFragment : Fragment() {
         if (_binding == null) return
         binding.cameraPreview.onResume()
         enhanceSurfaceReady = binding.cameraPreview.isInputSurfaceReady
-        rawSurfaceReady = binding.rawCameraPreview.isAvailable
+//        rawSurfaceReady = binding.rawCameraPreview.isAvailable
         startPreviewIfReady()
     }
 

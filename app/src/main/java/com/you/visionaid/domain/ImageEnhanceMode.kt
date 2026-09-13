@@ -6,9 +6,7 @@ enum class ImageEnhanceMode(
     val foregroundColor: Int,
     val usesRawCameraStream: Boolean = false,
 ) {
-    RAW_VIDEO(0xFFFFFFFF.toInt(), 0xFF000000.toInt(), usesRawCameraStream = true),
     ORIGINAL(0xFFFFFFFF.toInt(), 0xFF0B2E59.toInt()),
-    GRAYSCALE(0xFFE0E0E0.toInt(), 0xFF212121.toInt()),
     BLACK_WHITE(0xFF000000.toInt(), 0xFFFFFFFF.toInt()),
     WHITE_BLACK(0xFFFFFFFF.toInt(), 0xFF000000.toInt()),
     BLACK_GREEN(0xFF000000.toInt(), 0xFF4CAF50.toInt()),
@@ -22,4 +20,5 @@ enum class ImageEnhanceMode(
     BLUE_YELLOW(0xFF0B2E59.toInt(), 0xFFFFD54F.toInt()),
     YELLOW_BLUE(0xFFFFD54F.toInt(), 0xFF0B2E59.toInt()),
     GREEN_FILTER(0xFF163A2A.toInt(), 0xFFFFFFFF.toInt()),
+    GRAYSCALE(0xFFE0E0E0.toInt(), 0xFF212121.toInt()),
 }

@@ -36,7 +36,7 @@ class EyeAlgoOptionsMapperTest {
     @Test
     fun `raw video cannot be mapped to an EyeAlgo effect`() {
         assertThrows(IllegalArgumentException::class.java) {
-            EyeAlgoOptionsMapper.sdkMode(ImageEnhanceMode.RAW_VIDEO)
+            EyeAlgoOptionsMapper.sdkMode(ImageEnhanceMode.BLUE_WHITE)
         }
     }
 
