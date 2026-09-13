@@ -30,7 +30,13 @@ class Camera2EnhanceController(
     private val listener: Listener,
 ) : AutoCloseable {
     interface Listener {
-        fun onConfigured(cameraId: String, width: Int, height: Int)
+        fun onConfigured(
+            cameraId: String,
+            width: Int,
+            height: Int,
+            sensorOrientation: Int,
+            lensFacing: Int?,
+        )
         fun onStateChanged(state: State, detail: String = "")
     }
 
@@ -92,7 +98,7 @@ class Camera2EnhanceController(
             surfaceTexture.setDefaultBufferSize(candidate.size.width, candidate.size.height)
             activeCandidate = candidate
             imageReader = reader
-            notifyConfigured(candidate.id, candidate.size.width, candidate.size.height)
+            notifyConfigured(candidate)
             notify(State.OPENING, "cameraId=${candidate.id} ${candidate.size.width}x${candidate.size.height}")
             manager.openCamera(
                 candidate.id,
@@ -449,8 +455,16 @@ class Camera2EnhanceController(
         if (notify) notify(State.STOPPED)
     }
 
-    private fun notifyConfigured(cameraId: String, width: Int, height: Int) {
-        mainHandler.post { listener.onConfigured(cameraId, width, height) }
+    private fun notifyConfigured(candidate: CameraCandidate) {
+        mainHandler.post {
+            listener.onConfigured(
+                cameraId = candidate.id,
+                width = candidate.size.width,
+                height = candidate.size.height,
+                sensorOrientation = candidate.sensorOrientation,
+                lensFacing = candidate.lensFacing,
+            )
+        }
     }
 
     private fun notify(state: State, detail: String = "") {
@@ -466,6 +480,8 @@ class Camera2EnhanceController(
         private const val TARGET_HEIGHT = 720
 
         internal data class PreviewDimensions(val width: Int, val height: Int)
+
+        internal data class PreviewScale(val x: Float, val y: Float)
 
         internal data class CameraCandidate(
             val id: String,
@@ -532,6 +548,66 @@ class Camera2EnhanceController(
             } else {
                 (sensorOrientation - displayDegrees + 360) % 360
             }
+        }
+
+        /** Texture coordinates rotate in the opposite direction from JPEG metadata. */
+        internal fun previewRotation(sensorOrientation: Int, lensFacing: Int?, displayRotation: Int): Int =
+            (360 - jpegOrientation(sensorOrientation, lensFacing, displayRotation)).mod(360)
+
+        /** Compensates the clockwise quarter-turn applied by the live SurfaceTexture pipeline. */
+        internal fun liveRenderRotation(previewRotation: Int): Int = (previewRotation + 90).mod(360)
+
+        internal fun orientedPreviewDimensions(
+            width: Int,
+            height: Int,
+            rotationDegrees: Int,
+        ): PreviewDimensions = if (rotationDegrees % 180 == 0) {
+            PreviewDimensions(width, height)
+        } else {
+            PreviewDimensions(height, width)
+        }
+
+        internal fun centerCropScale(
+            sourceWidth: Int,
+            sourceHeight: Int,
+            viewWidth: Int,
+            viewHeight: Int,
+            rotationDegrees: Int,
+        ): PreviewScale {
+            require(sourceWidth > 0 && sourceHeight > 0 && viewWidth > 0 && viewHeight > 0)
+            val oriented = orientedPreviewDimensions(sourceWidth, sourceHeight, rotationDegrees)
+            val uniformScale = maxOf(
+                viewWidth.toFloat() / oriented.width,
+                viewHeight.toFloat() / oriented.height,
+            )
+            return PreviewScale(
+                x = uniformScale * sourceWidth / viewWidth,
+                y = uniformScale * sourceHeight / viewHeight,
+            )
+        }
+
+        /** Maps upright output coordinates back into the camera buffer for GPU sampling. */
+        internal fun frameTransform(rotationDegrees: Int): FloatArray = when (rotationDegrees.mod(360)) {
+            90 -> floatArrayOf(
+                0f, 1f, 0f,
+                -1f, 0f, 1f,
+                0f, 0f, 1f,
+            )
+            180 -> floatArrayOf(
+                -1f, 0f, 1f,
+                0f, -1f, 1f,
+                0f, 0f, 1f,
+            )
+            270 -> floatArrayOf(
+                0f, -1f, 1f,
+                1f, 0f, 0f,
+                0f, 0f, 1f,
+            )
+            else -> floatArrayOf(
+                1f, 0f, 0f,
+                0f, 1f, 0f,
+                0f, 0f, 1f,
+            )
         }
 
         private const val MAX_CAPTURE_IMAGES = 2

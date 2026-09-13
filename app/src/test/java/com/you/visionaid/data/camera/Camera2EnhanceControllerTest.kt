@@ -4,7 +4,9 @@ import android.hardware.camera2.CameraCharacteristics
 import android.view.Surface
 import com.you.visionaid.data.camera.Camera2EnhanceController.Companion.CameraCandidate
 import com.you.visionaid.data.camera.Camera2EnhanceController.Companion.PreviewDimensions
+import com.you.visionaid.data.camera.Camera2EnhanceController.Companion.PreviewScale
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertArrayEquals
 import org.junit.Test
 
 class Camera2EnhanceControllerTest {
@@ -93,6 +95,70 @@ class Camera2EnhanceControllerTest {
                 lensFacing = CameraCharacteristics.LENS_FACING_FRONT,
                 displayRotation = Surface.ROTATION_90,
             ),
+        )
+    }
+
+    @Test
+    fun `preview rotation is inverse of jpeg orientation`() {
+        assertEquals(
+            270,
+            Camera2EnhanceController.previewRotation(
+                sensorOrientation = 90,
+                lensFacing = CameraCharacteristics.LENS_FACING_BACK,
+                displayRotation = Surface.ROTATION_0,
+            ),
+        )
+        assertEquals(
+            0,
+            Camera2EnhanceController.previewRotation(
+                sensorOrientation = 90,
+                lensFacing = CameraCharacteristics.LENS_FACING_BACK,
+                displayRotation = Surface.ROTATION_90,
+            ),
+        )
+    }
+
+    @Test
+    fun `live rendering removes surface texture clockwise quarter turn`() {
+        assertEquals(180, Camera2EnhanceController.liveRenderRotation(270))
+        assertEquals(270, Camera2EnhanceController.liveRenderRotation(0))
+    }
+
+    @Test
+    fun `quarter turn swaps preview dimensions`() {
+        assertEquals(
+            PreviewDimensions(720, 1280),
+            Camera2EnhanceController.orientedPreviewDimensions(1280, 720, 90),
+        )
+        assertEquals(
+            PreviewDimensions(1280, 720),
+            Camera2EnhanceController.orientedPreviewDimensions(1280, 720, 180),
+        )
+    }
+
+    @Test
+    fun `center crop removes texture view stretching after quarter turn`() {
+        val scale = Camera2EnhanceController.centerCropScale(
+            sourceWidth = 1280,
+            sourceHeight = 720,
+            viewWidth = 1080,
+            viewHeight = 1800,
+            rotationDegrees = 90,
+        )
+
+        assertEquals(PreviewScale(16f / 9f, 0.6f), scale)
+    }
+
+    @Test
+    fun `frame transform rotates upright coordinates into camera buffer`() {
+        assertArrayEquals(
+            floatArrayOf(
+                0f, 1f, 0f,
+                -1f, 0f, 1f,
+                0f, 0f, 1f,
+            ),
+            Camera2EnhanceController.frameTransform(90),
+            0f,
         )
     }
 

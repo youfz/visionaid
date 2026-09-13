@@ -5,6 +5,7 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Matrix
 import android.graphics.SurfaceTexture
+import android.hardware.camera2.CameraCharacteristics
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -54,6 +55,10 @@ class CameraFragment : Fragment() {
     private var rawSurface: Surface? = null
     private var sourceWidth = 0
     private var sourceHeight = 0
+    private var sourceRotationDegrees = 0
+    private var mirrorPreview = false
+    @Volatile
+    private var enhancedFrameTransform = Camera2EnhanceController.frameTransform(0)
     private var renderedMode: ImageEnhanceMode? = null
     private var cameraActive = false
     private var sourceLoading = false
@@ -96,11 +101,22 @@ class CameraFragment : Fragment() {
         cameraController = Camera2EnhanceController(
             requireContext().applicationContext,
             object : Camera2EnhanceController.Listener {
-                override fun onConfigured(cameraId: String, width: Int, height: Int) {
+                override fun onConfigured(
+                    cameraId: String,
+                    width: Int,
+                    height: Int,
+                    sensorOrientation: Int,
+                    lensFacing: Int?,
+                ) {
                     sourceWidth = width
                     sourceHeight = height
-                    _binding?.cameraPreview?.setSourceSize(width, height)
-                    _binding?.rawCameraPreview?.let(::updateRawPreviewTransform)
+                    sourceRotationDegrees = Camera2EnhanceController.previewRotation(
+                        sensorOrientation = sensorOrientation,
+                        lensFacing = lensFacing,
+                        displayRotation = binding.root.display?.rotation ?: Surface.ROTATION_0,
+                    )
+                    mirrorPreview = lensFacing == CameraCharacteristics.LENS_FACING_FRONT
+                    updatePreviewGeometry()
                 }
 
                 override fun onStateChanged(
@@ -147,6 +163,7 @@ class CameraFragment : Fragment() {
 
     private fun configureEnhancePreview() {
         binding.cameraPreview.setCompareEnabled(false)
+        binding.cameraPreview.setFrameTransformProvider { _, _, _ -> enhancedFrameTransform }
         binding.cameraPreview.setProcessOptionsProvider {
             enhancedOptions(viewModel.uiState.value.mode)
         }
@@ -367,22 +384,38 @@ class CameraFragment : Fragment() {
 
     private fun updateRawPreviewTransform(preview: TextureView) {
         if (sourceWidth <= 0 || sourceHeight <= 0 || preview.width <= 0 || preview.height <= 0) return
-        val viewAspect = preview.width.toFloat() / preview.height
-        val sourceAspect = sourceWidth.toFloat() / sourceHeight
-        val scaleX: Float
-        val scaleY: Float
-        if (sourceAspect > viewAspect) {
-            scaleX = sourceAspect / viewAspect
-            scaleY = 1f
-        } else {
-            scaleX = 1f
-            scaleY = viewAspect / sourceAspect
-        }
+        val centerX = preview.width / 2f
+        val centerY = preview.height / 2f
+        val scale = Camera2EnhanceController.centerCropScale(
+            sourceWidth = sourceWidth,
+            sourceHeight = sourceHeight,
+            viewWidth = preview.width,
+            viewHeight = preview.height,
+            rotationDegrees = sourceRotationDegrees,
+        )
+        val renderRotation = Camera2EnhanceController.liveRenderRotation(sourceRotationDegrees)
         preview.setTransform(
             Matrix().apply {
-                setScale(scaleX, scaleY, preview.width / 2f, preview.height / 2f)
+                setScale(scale.x, scale.y, centerX, centerY)
+                postRotate(renderRotation.toFloat(), centerX, centerY)
+                if (mirrorPreview) postScale(-1f, 1f, centerX, centerY)
             },
         )
+    }
+
+    private fun updatePreviewGeometry() {
+        val cameraBinding = _binding ?: return
+        val oriented = Camera2EnhanceController.orientedPreviewDimensions(
+            sourceWidth,
+            sourceHeight,
+            sourceRotationDegrees,
+        )
+        enhancedFrameTransform = Camera2EnhanceController.frameTransform(
+            Camera2EnhanceController.liveRenderRotation(sourceRotationDegrees),
+        )
+        cameraBinding.cameraPreview.setSourceSize(oriented.width, oriented.height)
+        updateRawPreviewTransform(cameraBinding.rawCameraPreview)
+        cameraBinding.cameraPreview.requestRender()
     }
 
     private fun renderCameraState(state: Camera2EnhanceController.State, detail: String) {
