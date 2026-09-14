@@ -16,7 +16,7 @@
     <string name="image_load_failed">无法读取所选图片</string>
     <string name="image_process_failed">图片视觉模式处理失败，已显示原图</string>
     <string name="visual_mode">视觉模式</string>
-    <string name="original_enhance">全彩模式</string>
+    <string name="original_enhance">原彩模式</string>
     <string name="original_desc">原始视频，保留原色</string>
     <string name="black_white">黑底白字</string>
     <string name="black_white_desc">高对比度，减少眩光</string>
@@ -87,7 +87,7 @@
     <string name="increase_label">A+\n放大</string>
     <string name="decrease_short">A−</string>
     <string name="increase_short">A+</string>
-    <string name="original_option">全彩模式\n原始视频，保留原色</string>
+    <string name="original_option">原彩模式\n原始视频，保留原色</string>
     <string name="black_white_option">黑底白字\n高对比度，减少眩光</string>
     <string name="blue_white_option">蓝底白字\n舒适阅读，强对比度</string>
     <string name="yellow_black_option">黄底黑字\n温和护眼，易于阅读</string>

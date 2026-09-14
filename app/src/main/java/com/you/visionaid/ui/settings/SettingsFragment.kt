@@ -16,6 +16,7 @@ import com.you.visionaid.domain.ReadingFontSize
 import com.you.visionaid.domain.RecognitionLanguage
 import com.you.visionaid.domain.SpeechSpeed
 import com.you.visionaid.ui.camera.VisualModeBottomSheet
+import com.you.visionaid.ui.camera.titleResource
 import com.you.visionaid.viewmodel.ReadingUiState
 import com.you.visionaid.viewmodel.ReadingViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -51,6 +52,7 @@ class SettingsFragment : Fragment() {
 
     private fun render(state: ReadingUiState) {
         binding.fontSizeValue.setText(state.fontSize.labelResource())
+        binding.modeValue.setText(state.mode.titleResource())
         binding.languageValue.setText(state.recognitionLanguage.labelResource())
         binding.speechSpeedValue.setText(state.speechSpeed.labelResource())
         if (binding.autoReadSwitch.isChecked != state.autoSpeak) {

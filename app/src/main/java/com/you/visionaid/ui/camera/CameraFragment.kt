@@ -306,6 +306,8 @@ class CameraFragment : Fragment() {
     private fun renderPreviewMode(mode: ImageEnhanceMode) {
         val modeChanged = renderedMode != null && renderedMode != mode
         renderedMode = mode
+        binding.enhanceModeLabel.setText(mode.titleResource())
+        binding.enhanceButton.contentDescription = getString(mode.titleResource())
 //        binding.rawCameraPreview.isVisible = mode.usesRawCameraStream
         binding.cameraPreview.isVisible = !mode.usesRawCameraStream
         if (!mode.usesRawCameraStream) {

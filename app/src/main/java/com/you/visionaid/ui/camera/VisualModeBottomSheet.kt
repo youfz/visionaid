@@ -90,7 +90,7 @@ private class VisualModeAdapter(
 }
 
 @StringRes
-private fun ImageEnhanceMode.titleResource(): Int = when (this) {
+internal fun ImageEnhanceMode.titleResource(): Int = when (this) {
     ImageEnhanceMode.ORIGINAL -> R.string.original_enhance
     ImageEnhanceMode.BLACK_WHITE -> R.string.black_white
     ImageEnhanceMode.WHITE_BLACK -> R.string.white_black

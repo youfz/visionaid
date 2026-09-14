@@ -25,7 +25,7 @@ data class ReadingUiState(
     val isRecognizing: Boolean = false,
     val ocrError: OcrUiError? = null,
     val recognitionVersion: Long = 0L,
-    val autoSpeak: Boolean = true,
+    val autoSpeak: Boolean = false,
     val saveHistory: Boolean = true,
 ) {
     val fontSizeSp: Int get() = fontSize.textSizeSp

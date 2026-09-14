@@ -3,142 +3,190 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
-    android:orientation="vertical"
-    android:paddingHorizontal="@dimen/page_edge"
-    android:paddingVertical="16dp">
+    android:background="@color/reference_surface"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:minHeight="56dp"
-        android:orientation="horizontal">
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/back_button"
-            style="@style/Widget.MaterialComponents.Button.TextButton"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:contentDescription="@string/back"
-            app:icon="@drawable/ic_back"
-            app:iconTint="@color/navy" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:maxLines="2"
-            android:text="@string/recognition_result"
-            android:textColor="@color/navy"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/recognize_again_button"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:maxLines="2"
-            android:minHeight="@dimen/touch_target"
-            android:text="@string/recognize_again"
-            android:textColor="@color/navy" />
-    </LinearLayout>
-
-    <ScrollView
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginTop="16dp"
         android:layout_weight="1"
-        android:background="@drawable/bg_card"
+        android:clipToPadding="false"
         android:fillViewport="true"
-        android:padding="@dimen/content_padding">
+        android:paddingHorizontal="10dp"
+        android:paddingTop="10dp">
 
-        <TextView
-            android:id="@+id/result_text"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="12dp"
-            android:textColor="@color/navy"
-            android:textSize="@dimen/text_reading" />
-    </ScrollView>
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:minHeight="56dp"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/back_button"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/back"
+                    app:backgroundTint="@android:color/transparent"
+                    app:icon="@drawable/ic_back"
+                    app:iconTint="@color/reference_text_primary" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:maxLines="2"
+                    android:text="@string/recognition_result"
+                    android:textColor="@color/reference_text_primary"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/recognize_again_button"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="48dp"
+                    android:maxLines="1"
+                    android:minWidth="96dp"
+                    android:text="@string/recognize_again"
+                    android:textColor="@color/reference_text_primary"
+                    android:textSize="16sp"
+                    app:backgroundTint="@android:color/transparent"
+                    app:cornerRadius="8dp"
+                    app:strokeColor="@color/reference_border"
+                    app:strokeWidth="1dp" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/result_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/bg_ocr_result_card"
+                android:gravity="center_vertical"
+                android:lineSpacingExtra="12dp"
+                android:minHeight="136dp"
+                android:padding="10dp"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_reading" />
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="18dp"
+        android:paddingHorizontal="10dp"
         android:text="@string/font_size"
-        android:textColor="@color/navy"
+        android:textColor="@color/reference_text_primary"
         android:textSize="@dimen/text_body"
         android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="56dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:background="@drawable/bg_segmented_control"
+        android:baselineAligned="false"
         android:gravity="center_vertical"
-        android:minHeight="72dp"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/decrease_button"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:minHeight="@dimen/primary_button_height"
+            android:minWidth="0dp"
             android:text="@string/decrease_short"
-            android:textColor="@color/navy" />
+            android:textColor="@color/reference_text_primary"
+            android:textSize="20sp"
+            app:backgroundTint="@android:color/transparent"
+            app:rippleColor="#1A17384C" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/reference_border" />
 
         <TextView
             android:id="@+id/font_size_value"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="@color/navy"
-            android:textSize="36sp" />
+            android:textColor="@color/reference_text_primary"
+            android:textSize="32sp" />
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="@color/reference_border" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/increase_button"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:minHeight="@dimen/primary_button_height"
+            android:minWidth="0dp"
             android:text="@string/increase_short"
-            android:textColor="@color/navy" />
+            android:textColor="@color/reference_text_primary"
+            android:textSize="20sp"
+            app:backgroundTint="@android:color/transparent"
+            app:rippleColor="#1A17384C" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:minHeight="64dp"
+        android:gravity="center_vertical"
+        android:minHeight="80dp"
         android:orientation="horizontal"
-        android:paddingTop="8dp">
+        android:paddingHorizontal="10dp"
+        android:paddingTop="12dp"
+        android:paddingBottom="16dp">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/copy_button"
             style="@style/Widget.MaterialComponents.Button.OutlinedButton"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:maxLines="2"
-            android:minHeight="@dimen/primary_button_height"
-            android:text="@string/copy" />
+            android:maxLines="1"
+            android:text="@string/copy"
+            android:textColor="@color/reference_text_primary"
+            android:textSize="18sp"
+            app:backgroundTint="@android:color/transparent"
+            app:cornerRadius="8dp"
+            app:strokeColor="@color/reference_text_primary"
+            app:strokeWidth="1dp" />
 
         <Space
-            android:layout_width="@dimen/card_gap"
+            android:layout_width="12dp"
             android:layout_height="1dp" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/read_all_button"
+            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="56dp"
             android:layout_weight="1"
-            android:maxLines="2"
-            android:minHeight="@dimen/primary_button_height"
+            android:maxLines="1"
             android:text="@string/read_all"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:backgroundTint="@color/reference_text_primary"
+            app:cornerRadius="8dp"
             app:icon="@drawable/ic_speak"
-            app:iconTint="@color/white" />
+            app:iconTint="@color/accent_cyan" />
     </LinearLayout>
 </LinearLayout>

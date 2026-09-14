@@ -11,4 +11,10 @@
     <color name="navy_dark">#061E3C</color>
     <color name="accent_cyan">#74DFFF</color>
     <color name="camera_bottom_bar">#ED17384C</color>
+    <color name="reference_surface">#F4FAFD</color>
+    <color name="reference_text_primary">#17384C</color>
+    <color name="reference_text_secondary">#60778A</color>
+    <color name="reference_border">#AFC0CD</color>
+    <color name="photo_action_scrim">#B817384C</color>
+    <color name="photo_action_accent">#662C91B4</color>
 </resources>
