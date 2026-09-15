@@ -1,3 +1,4 @@
+/*
 package com.you.visionaid.core.network
 
 import com.you.visionaid.BuildConfig
@@ -9,7 +10,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
-/** Creates the shared HTTP stack used by remote data sources. */
+*/
+/** Creates the shared HTTP stack used by remote data sources. *//*
+
 object NetworkModule {
     private const val TIMEOUT_SECONDS = 30L
 
@@ -58,3 +61,4 @@ object NetworkModule {
             .build()
     }
 }
+*/

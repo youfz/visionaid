@@ -83,15 +83,15 @@ dependencies {
     implementation(libs.material)
 
     // 网络请求与 JSON 反序列化。
-    implementation(libs.retrofit)
+ /*   implementation(libs.retrofit)
     implementation(libs.retrofit.converter.gson)
     implementation(libs.okhttp)
-    implementation(libs.okhttp.logging.interceptor)
+    implementation(libs.okhttp.logging.interceptor)*/
 
     // 本地 JVM 测试、协程调度测试和可控 HTTP 测试服务。
     testImplementation(libs.junit)
-    testImplementation(libs.kotlinx.coroutines.test)
-    testImplementation(libs.okhttp.mockwebserver)
+/*    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.okhttp.mockwebserver)*/
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 }

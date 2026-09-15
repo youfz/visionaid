@@ -1,6 +1,6 @@
 package com.you.visionaid.core.network
 
-import retrofit2.HttpException
+//import retrofit2.HttpException
 import java.io.IOException
 import kotlinx.coroutines.CancellationException
 
@@ -8,9 +8,7 @@ import kotlinx.coroutines.CancellationException
 suspend inline fun <T> safeApiCall(crossinline request: suspend () -> T): ApiResult<T> =
     try {
         ApiResult.Success(request())
-    } catch (error: HttpException) {
-        ApiResult.HttpError(error.code(), error.message())
-    } catch (error: IOException) {
+    }  catch (error: IOException) {
         ApiResult.NetworkError(error)
     } catch (error: CancellationException) {
         throw error

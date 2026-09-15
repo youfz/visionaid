@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <!-- Retrofit 访问远程文章接口所需的网络权限。 -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 网络模块暂时停用；恢复时取消下面权限声明的注释。 -->
+    <!-- <uses-permission android:name="android.permission.INTERNET" /> -->
     <uses-permission android:name="android.permission.CAMERA" />
 
     <!-- 优先使用外接相机，没有外接相机时允许回退到设备后摄。 -->
