@@ -62,7 +62,7 @@
     <string name="slow">慢</string>
     <string name="normal">正常</string>
     <string name="fast">快</string>
-    <string name="privacy_settings">隐私设置</string>
+    <string name="privacy_settings">隐私政策</string>
     <string name="auto_read">自动朗读</string>
     <string name="auto_read_desc">识别后自动朗读全文</string>
     <string name="save_history">保存识别历史</string>

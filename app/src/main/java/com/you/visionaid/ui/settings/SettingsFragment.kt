@@ -42,7 +42,6 @@ class SettingsFragment : Fragment() {
         binding.languageRow.setOnClickListener { showLanguageDialog() }
         binding.speechSpeedRow.setOnClickListener { showSpeechSpeedDialog() }
         binding.autoReadSwitch.setOnCheckedChangeListener { _, checked -> viewModel.setAutoSpeak(checked) }
-        binding.saveHistorySwitch.setOnCheckedChangeListener { _, checked -> viewModel.setSaveHistory(checked) }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect(::render)
@@ -57,9 +56,6 @@ class SettingsFragment : Fragment() {
         binding.speechSpeedValue.setText(state.speechSpeed.labelResource())
         if (binding.autoReadSwitch.isChecked != state.autoSpeak) {
             binding.autoReadSwitch.isChecked = state.autoSpeak
-        }
-        if (binding.saveHistorySwitch.isChecked != state.saveHistory) {
-            binding.saveHistorySwitch.isChecked = state.saveHistory
         }
     }
 
