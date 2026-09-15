@@ -3,6 +3,8 @@ package com.you.visionaid.core.di
 import android.content.Context
 import com.you.visionaid.data.enhance.EyeAlgoImageEnhancer
 import com.you.visionaid.data.ocr.EyeAlgoOcrEngine
+import com.you.visionaid.data.preferences.SharedPreferencesFontPreferences
+import com.you.visionaid.domain.FontPreferences
 import com.you.visionaid.domain.ImageEnhancer
 import com.you.visionaid.domain.OcrEngine
 
@@ -16,5 +18,8 @@ class AppContainer(context: Context) {
     private val applicationContext = context.applicationContext
 
     val ocrEngine: OcrEngine by lazy { EyeAlgoOcrEngine(applicationContext) }
+    val fontPreferences: FontPreferences by lazy {
+        SharedPreferencesFontPreferences(applicationContext)
+    }
     fun createImageEnhancer(): ImageEnhancer = EyeAlgoImageEnhancer()
 }

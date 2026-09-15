@@ -18,6 +18,7 @@ import com.you.visionaid.R
 import com.you.visionaid.VisionAidApplication
 import com.you.visionaid.databinding.FragmentOcrResultBinding
 import com.you.visionaid.util.TextToSpeechManager
+import com.you.visionaid.util.setReadingTextSizeSp
 import com.you.visionaid.viewmodel.ReadingViewModel
 import kotlinx.coroutines.launch
 
@@ -29,7 +30,7 @@ class OcrResultFragment : Fragment() {
     private var lastAutoSpokenVersion = -1L
     private val viewModel: ReadingViewModel by activityViewModels {
         val app = requireActivity().application as VisionAidApplication
-        ReadingViewModel.Factory(app.appContainer.ocrEngine)
+        ReadingViewModel.Factory(app.appContainer.ocrEngine, app.appContainer.fontPreferences)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View {
@@ -42,8 +43,8 @@ class OcrResultFragment : Fragment() {
         lastAutoSpokenVersion = state?.getLong(KEY_AUTO_SPOKEN_VERSION, -1L) ?: -1L
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
         binding.recognizeAgainButton.setOnClickListener { findNavController().navigateUp() }
-        binding.decreaseButton.setOnClickListener { viewModel.decreaseFont() }
-        binding.increaseButton.setOnClickListener { viewModel.increaseFont() }
+        binding.decreaseButton.setOnClickListener { viewModel.decreaseReadingFont() }
+        binding.increaseButton.setOnClickListener { viewModel.increaseReadingFont() }
         binding.readAllButton.setOnClickListener {
             val readingState = viewModel.uiState.value
             speech.speak(
@@ -61,8 +62,8 @@ class OcrResultFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect {
                     binding.resultText.text = it.text
-                    binding.resultText.textSize = it.fontSizeSp.toFloat()
-                    binding.fontSizeValue.text = it.fontSizeSp.toString()
+                    binding.resultText.setReadingTextSizeSp(it.readingFontSizeSp)
+                    binding.fontSizeValue.text = it.readingFontSizeSp.toString()
                     if (
                         it.autoSpeak &&
                         it.recognitionVersion > 0L &&

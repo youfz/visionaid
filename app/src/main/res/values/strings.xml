@@ -48,6 +48,7 @@
     <string name="recognition_result">识别结果</string>
     <string name="recognize_again">重新识别</string>
     <string name="font_size">字体大小</string>
+    <string name="app_font_size">App 文字大小</string>
     <string name="small">小</string>
     <string name="standard">标准</string>
     <string name="medium">中</string>

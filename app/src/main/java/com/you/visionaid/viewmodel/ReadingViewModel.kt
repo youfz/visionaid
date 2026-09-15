@@ -3,9 +3,14 @@ package com.you.visionaid.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.you.visionaid.domain.AppFontSize
+import com.you.visionaid.domain.DEFAULT_READING_FONT_SIZE_SP
+import com.you.visionaid.domain.FontPreferences
 import com.you.visionaid.domain.ImageEnhanceMode
+import com.you.visionaid.domain.MAX_READING_FONT_SIZE_SP
+import com.you.visionaid.domain.MIN_READING_FONT_SIZE_SP
 import com.you.visionaid.domain.OcrEngine
-import com.you.visionaid.domain.ReadingFontSize
+import com.you.visionaid.domain.READING_FONT_SIZE_STEP_SP
 import com.you.visionaid.domain.RecognitionLanguage
 import com.you.visionaid.domain.RgbaImage
 import com.you.visionaid.domain.SpeechSpeed
@@ -18,7 +23,8 @@ import kotlinx.coroutines.launch
 
 data class ReadingUiState(
     val text: String = "春晓\n[唐] 孟浩然\n\n春眠不觉晓，\n处处闻啼鸟。\n夜来风雨声，\n花落知多少。",
-    val fontSize: ReadingFontSize = ReadingFontSize.STANDARD,
+    val appFontSize: AppFontSize = AppFontSize.STANDARD,
+    val readingFontSizeSp: Int = DEFAULT_READING_FONT_SIZE_SP,
     val mode: ImageEnhanceMode = ImageEnhanceMode.ORIGINAL,
     val recognitionLanguage: RecognitionLanguage = RecognitionLanguage.SIMPLIFIED_CHINESE,
     val speechSpeed: SpeechSpeed = SpeechSpeed.NORMAL,
@@ -27,35 +33,46 @@ data class ReadingUiState(
     val recognitionVersion: Long = 0L,
     val autoSpeak: Boolean = false,
     val saveHistory: Boolean = true,
-) {
-    val fontSizeSp: Int get() = fontSize.textSizeSp
-}
+)
 
 enum class OcrUiError {
     NO_TEXT,
     RECOGNITION_FAILED,
 }
 
-/** 跨页面共享阅读文字、字号、视觉模式与设置状态。 */
-class ReadingViewModel(private val ocrEngine: OcrEngine) : ViewModel() {
-    private val _uiState = MutableStateFlow(ReadingUiState())
+/** 跨页面共享阅读文字、独立字号、视觉模式与设置状态。 */
+class ReadingViewModel(
+    private val ocrEngine: OcrEngine,
+    private val fontPreferences: FontPreferences,
+) : ViewModel() {
+    private val _uiState = MutableStateFlow(
+        ReadingUiState(
+            appFontSize = fontPreferences.appFontSize,
+            readingFontSizeSp = fontPreferences.readingFontSizeSp,
+        ),
+    )
     val uiState: StateFlow<ReadingUiState> = _uiState.asStateFlow()
 
     fun setMode(mode: ImageEnhanceMode) = _uiState.update { it.copy(mode = mode) }
 
-    fun decreaseFont() = _uiState.update {
-        it.copy(fontSize = ReadingFontSize.entries[(it.fontSize.ordinal - 1).coerceAtLeast(0)])
+    fun decreaseReadingFont() = _uiState.update {
+        val updated = (it.readingFontSizeSp - READING_FONT_SIZE_STEP_SP)
+            .coerceAtLeast(MIN_READING_FONT_SIZE_SP)
+        fontPreferences.setReadingFontSizeSp(updated)
+        it.copy(readingFontSizeSp = updated)
     }
 
-    fun increaseFont() = _uiState.update {
-        it.copy(
-            fontSize = ReadingFontSize.entries[
-                (it.fontSize.ordinal + 1).coerceAtMost(ReadingFontSize.entries.lastIndex)
-            ],
-        )
+    fun increaseReadingFont() = _uiState.update {
+        val updated = (it.readingFontSizeSp + READING_FONT_SIZE_STEP_SP)
+            .coerceAtMost(MAX_READING_FONT_SIZE_SP)
+        fontPreferences.setReadingFontSizeSp(updated)
+        it.copy(readingFontSizeSp = updated)
     }
 
-    fun setFontSize(fontSize: ReadingFontSize) = _uiState.update { it.copy(fontSize = fontSize) }
+    fun setAppFontSize(fontSize: AppFontSize) = _uiState.update {
+        fontPreferences.setAppFontSize(fontSize)
+        it.copy(appFontSize = fontSize)
+    }
 
     fun setRecognitionLanguage(language: RecognitionLanguage) =
         _uiState.update { it.copy(recognitionLanguage = language) }
@@ -96,11 +113,14 @@ class ReadingViewModel(private val ocrEngine: OcrEngine) : ViewModel() {
 
     fun clearOcrError() = _uiState.update { it.copy(ocrError = null) }
 
-    class Factory(private val engine: OcrEngine) : ViewModelProvider.Factory {
+    class Factory(
+        private val engine: OcrEngine,
+        private val fontPreferences: FontPreferences,
+    ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             require(modelClass.isAssignableFrom(ReadingViewModel::class.java))
             @Suppress("UNCHECKED_CAST")
-            return ReadingViewModel(engine) as T
+            return ReadingViewModel(engine, fontPreferences) as T
         }
     }
 

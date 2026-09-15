@@ -17,6 +17,7 @@ import com.you.visionaid.databinding.FragmentEnhancedReaderBinding
 import com.you.visionaid.domain.ImageEnhanceMode
 import com.you.visionaid.ui.camera.VisualModeBottomSheet
 import com.you.visionaid.util.TextToSpeechManager
+import com.you.visionaid.util.setReadingTextSizeSp
 import com.you.visionaid.viewmodel.ReadingUiState
 import com.you.visionaid.viewmodel.ReadingViewModel
 import kotlinx.coroutines.launch
@@ -29,7 +30,7 @@ class EnhancedReaderFragment : Fragment() {
     private var isSpeaking = false
     private val viewModel: ReadingViewModel by activityViewModels {
         val app = requireActivity().application as VisionAidApplication
-        ReadingViewModel.Factory(app.appContainer.ocrEngine)
+        ReadingViewModel.Factory(app.appContainer.ocrEngine, app.appContainer.fontPreferences)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View {
@@ -41,8 +42,8 @@ class EnhancedReaderFragment : Fragment() {
         speech = TextToSpeechManager(requireContext())
         binding.backButton.setOnClickListener { findNavController().navigateUp() }
         binding.changeModeButton.setOnClickListener { VisualModeBottomSheet().show(childFragmentManager, "mode") }
-        binding.decreaseButton.setOnClickListener { viewModel.decreaseFont() }
-        binding.increaseButton.setOnClickListener { viewModel.increaseFont() }
+        binding.decreaseButton.setOnClickListener { viewModel.decreaseReadingFont() }
+        binding.increaseButton.setOnClickListener { viewModel.increaseReadingFont() }
         binding.readerSpeakButton.setOnClickListener {
             if (isSpeaking) {
                 speech.pause()
@@ -68,7 +69,7 @@ class EnhancedReaderFragment : Fragment() {
 
     private fun render(state: ReadingUiState) {
         binding.readingText.text = state.text
-        binding.readingText.textSize = state.fontSizeSp.toFloat()
+        binding.readingText.setReadingTextSizeSp(state.readingFontSizeSp)
         val background = state.mode.backgroundColor
         val foreground = state.mode.foregroundColor
         binding.readerRoot.setBackgroundColor(background)

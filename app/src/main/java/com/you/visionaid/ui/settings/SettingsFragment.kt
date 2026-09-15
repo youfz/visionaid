@@ -12,7 +12,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.you.visionaid.R
 import com.you.visionaid.VisionAidApplication
 import com.you.visionaid.databinding.FragmentSettingsBinding
-import com.you.visionaid.domain.ReadingFontSize
+import com.you.visionaid.domain.AppFontSize
 import com.you.visionaid.domain.RecognitionLanguage
 import com.you.visionaid.domain.SpeechSpeed
 import com.you.visionaid.ui.camera.VisualModeBottomSheet
@@ -22,13 +22,13 @@ import com.you.visionaid.viewmodel.ReadingViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.launch
 
-/** 设置页；第一阶段设置保存在共享 ViewModel 中，进程内即时生效。 */
+/** 设置页；界面字号与阅读正文字号分别管理，字号偏好在本地持久化。 */
 class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = requireNotNull(_binding)
     private val viewModel: ReadingViewModel by activityViewModels {
         val app = requireActivity().application as VisionAidApplication
-        ReadingViewModel.Factory(app.appContainer.ocrEngine)
+        ReadingViewModel.Factory(app.appContainer.ocrEngine, app.appContainer.fontPreferences)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View {
@@ -51,7 +51,7 @@ class SettingsFragment : Fragment() {
     }
 
     private fun render(state: ReadingUiState) {
-        binding.fontSizeValue.setText(state.fontSize.labelResource())
+        binding.fontSizeValue.setText(state.appFontSize.labelResource())
         binding.modeValue.setText(state.mode.titleResource())
         binding.languageValue.setText(state.recognitionLanguage.labelResource())
         binding.speechSpeedValue.setText(state.speechSpeed.labelResource())
@@ -64,12 +64,18 @@ class SettingsFragment : Fragment() {
     }
 
     private fun showFontSizeDialog() {
-        val options = ReadingFontSize.entries
+        val options = AppFontSize.entries
         showSingleChoice(
-            title = R.string.font_size,
+            title = R.string.app_font_size,
             labels = options.map { getString(it.labelResource()) }.toTypedArray(),
-            selected = viewModel.uiState.value.fontSize.ordinal,
-        ) { viewModel.setFontSize(options[it]) }
+            selected = viewModel.uiState.value.appFontSize.ordinal,
+        ) {
+            val selected = options[it]
+            if (selected != viewModel.uiState.value.appFontSize) {
+                viewModel.setAppFontSize(selected)
+                requireActivity().recreate()
+            }
+        }
     }
 
     private fun showLanguageDialog() {
@@ -107,11 +113,11 @@ class SettingsFragment : Fragment() {
     }
 
     @androidx.annotation.StringRes
-    private fun ReadingFontSize.labelResource(): Int = when (this) {
-        ReadingFontSize.SMALL -> R.string.small
-        ReadingFontSize.STANDARD -> R.string.standard
-        ReadingFontSize.MEDIUM -> R.string.medium
-        ReadingFontSize.LARGE -> R.string.large
+    private fun AppFontSize.labelResource(): Int = when (this) {
+        AppFontSize.SMALL -> R.string.small
+        AppFontSize.STANDARD -> R.string.standard
+        AppFontSize.MEDIUM -> R.string.medium
+        AppFontSize.LARGE -> R.string.large
     }
 
     @androidx.annotation.StringRes

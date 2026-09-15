@@ -1,16 +1,19 @@
 package com.you.visionaid.ui
 
+import android.content.Context
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.Insets
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
 import androidx.core.view.updatePadding
-import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import com.you.visionaid.R
+import com.you.visionaid.data.preferences.SharedPreferencesFontPreferences
 import com.you.visionaid.databinding.ActivityMainBinding
 
 /** 单 Activity 容器，页面切换统一交给 Navigation Component。 */
@@ -18,6 +21,14 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var systemBarInsets = Insets.NONE
     private var currentDestinationId = 0
+
+    override fun attachBaseContext(newBase: Context) {
+        val appFontSize = SharedPreferencesFontPreferences(newBase).appFontSize
+        val scaledConfiguration = Configuration(newBase.resources.configuration).apply {
+            fontScale *= appFontSize.scaleFactor
+        }
+        super.attachBaseContext(newBase.createConfigurationContext(scaledConfiguration))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

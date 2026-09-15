@@ -87,7 +87,7 @@ class CameraFragment : Fragment() {
     }
     private val viewModel: ReadingViewModel by activityViewModels {
         val app = requireActivity().application as VisionAidApplication
-        ReadingViewModel.Factory(app.appContainer.ocrEngine)
+        ReadingViewModel.Factory(app.appContainer.ocrEngine, app.appContainer.fontPreferences)
     }
     private val photoViewModel: CameraPhotoViewModel by viewModels {
         val app = requireActivity().application as VisionAidApplication

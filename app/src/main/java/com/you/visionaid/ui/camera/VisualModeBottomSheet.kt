@@ -23,7 +23,7 @@ class VisualModeBottomSheet : BottomSheetDialogFragment() {
     private val binding get() = requireNotNull(_binding)
     private val viewModel: ReadingViewModel by activityViewModels {
         val app = requireActivity().application as VisionAidApplication
-        ReadingViewModel.Factory(app.appContainer.ocrEngine)
+        ReadingViewModel.Factory(app.appContainer.ocrEngine, app.appContainer.fontPreferences)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View {
