@@ -68,12 +68,15 @@ class CameraFragment : Fragment() {
     private var sourceLoading = false
     private var ocrRecognizing = false
     private var photoProcessing = false
+    private var cameraPermissionRequested = false
+    private var cameraPermissionRequestInFlight = false
     private var displayedPhoto: Bitmap? = null
     private var displayedPixels: ByteArray? = null
     private var photoBitmapJob: Job? = null
     private val cameraPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
     ) { granted ->
+        cameraPermissionRequestInFlight = false
         if (granted) {
             startPreviewIfReady()
         } else {
@@ -95,6 +98,9 @@ class CameraFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View {
+        state?.let {
+            cameraPermissionRequested = it.getBoolean(STATE_CAMERA_PERMISSION_REQUESTED)
+        }
         _binding = FragmentCameraBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -149,7 +155,11 @@ class CameraFragment : Fragment() {
         binding.recognizeTextButton.setOnClickListener { recognize() }
         binding.cameraRetryButton.setOnClickListener {
             cameraActive = false
-            startPreviewIfReady()
+            if (hasCameraPermission()) {
+                startPreviewIfReady()
+            } else {
+                requestCameraPermission()
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -447,10 +457,12 @@ class CameraFragment : Fragment() {
         if (!isResumed || cameraActive || _binding == null) return
         val rawMode = viewModel.uiState.value.mode.usesRawCameraStream
         if ((rawMode && !rawSurfaceReady) || (!rawMode && !enhanceSurfaceReady)) return
-        if (ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) !=
-            PackageManager.PERMISSION_GRANTED
-        ) {
-            cameraPermission.launch(Manifest.permission.CAMERA)
+        if (!hasCameraPermission()) {
+            if (!cameraPermissionRequested) {
+                requestCameraPermission()
+            } else {
+                renderCameraFailure(getString(R.string.camera_permission_denied))
+            }
             return
         }
         val texture = binding.cameraPreview.inputSurfaceTexture()
@@ -458,6 +470,17 @@ class CameraFragment : Fragment() {
         if (surface == null || texture == null) return
         cameraActive = true
         cameraController.start(surface, texture)
+    }
+
+    private fun hasCameraPermission(): Boolean =
+        ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) ==
+            PackageManager.PERMISSION_GRANTED
+
+    private fun requestCameraPermission() {
+        if (!isResumed || cameraPermissionRequestInFlight) return
+        cameraPermissionRequested = true
+        cameraPermissionRequestInFlight = true
+        cameraPermission.launch(Manifest.permission.CAMERA)
     }
 
     private fun updateRawPreviewTransform(preview: TextureView) {
@@ -572,6 +595,11 @@ class CameraFragment : Fragment() {
         super.onPause()
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(STATE_CAMERA_PERMISSION_REQUESTED, cameraPermissionRequested)
+        super.onSaveInstanceState(outState)
+    }
+
     override fun onDestroyView() {
         if (::cameraController.isInitialized) cameraController.close()
         photoBitmapJob?.cancel()
@@ -590,6 +618,7 @@ class CameraFragment : Fragment() {
         private const val TAG = "CameraFragment"
         private const val FOCUS_INDICATOR_DELAY_MS = 650L
         private const val FOCUS_INDICATOR_FADE_MS = 250L
+        private const val STATE_CAMERA_PERMISSION_REQUESTED = "camera_permission_requested"
 
         internal fun mapPreviewPointToSensor(
             touchX: Float,

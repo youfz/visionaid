@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">清阅</string>
+    <string name="app_name">明视辅助</string>
     <string name="onboarding_title">让文字更清晰</string>
     <string name="onboarding_body">拍摄或导入文字，智能增强清晰度，\n识别内容并朗读，阅读更轻松。</string>
     <string name="start_using">开始使用</string>
