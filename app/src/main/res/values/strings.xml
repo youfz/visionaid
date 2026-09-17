@@ -63,6 +63,9 @@
     <string name="normal">正常</string>
     <string name="fast">快</string>
     <string name="privacy_settings">隐私政策</string>
+    <string name="camera_permission">相机权限</string>
+    <string name="permission_granted">已允许</string>
+    <string name="permission_not_granted">未允许</string>
     <string name="auto_read">自动朗读</string>
     <string name="auto_read_desc">识别后自动朗读全文</string>
     <string name="save_history">保存识别历史</string>
@@ -73,6 +76,7 @@
     <string name="camera_opening">正在启动相机…</string>
     <string name="camera_running">对准文字区域</string>
     <string name="camera_permission_denied">需要相机权限才能显示实时画面</string>
+    <string name="open_app_settings">前往设置</string>
     <string name="camera_disconnected">相机已断开</string>
     <string name="camera_failed">相机或图像增强启动失败</string>
     <string name="retry_camera">重试相机</string>

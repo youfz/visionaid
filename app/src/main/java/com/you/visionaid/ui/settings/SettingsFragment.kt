@@ -1,11 +1,14 @@
 package com.you.visionaid.ui.settings
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -17,6 +20,7 @@ import com.you.visionaid.domain.RecognitionLanguage
 import com.you.visionaid.domain.SpeechSpeed
 import com.you.visionaid.ui.camera.VisualModeBottomSheet
 import com.you.visionaid.ui.camera.titleResource
+import com.you.visionaid.ui.openAppSettings
 import com.you.visionaid.viewmodel.ReadingUiState
 import com.you.visionaid.viewmodel.ReadingViewModel
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -41,12 +45,23 @@ class SettingsFragment : Fragment() {
         binding.fontRow.setOnClickListener { showFontSizeDialog() }
         binding.languageRow.setOnClickListener { showLanguageDialog() }
         binding.speechSpeedRow.setOnClickListener { showSpeechSpeedDialog() }
+        binding.cameraPermissionRow.setOnClickListener { requireContext().openAppSettings() }
         binding.autoReadSwitch.setOnCheckedChangeListener { _, checked -> viewModel.setAutoSpeak(checked) }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect(::render)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (_binding == null) return
+        val granted = ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.CAMERA) ==
+            PackageManager.PERMISSION_GRANTED
+        binding.cameraPermissionValue.setText(
+            if (granted) R.string.permission_granted else R.string.permission_not_granted,
+        )
     }
 
     private fun render(state: ReadingUiState) {

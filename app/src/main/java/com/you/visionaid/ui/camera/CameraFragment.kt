@@ -36,6 +36,7 @@ import com.you.visionaid.data.enhance.AndroidImageCodec
 import com.you.visionaid.data.enhance.EyeAlgoOptionsMapper
 import com.you.visionaid.databinding.FragmentCameraBinding
 import com.you.visionaid.domain.ImageEnhanceMode
+import com.you.visionaid.ui.openAppSettings
 import com.you.visionaid.viewmodel.CameraPhotoUiState
 import com.you.visionaid.viewmodel.CameraPhotoViewModel
 import com.you.visionaid.viewmodel.OcrUiError
@@ -44,6 +45,20 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+internal enum class CameraPermissionAction {
+    REQUEST,
+    OPEN_SETTINGS,
+}
+
+internal fun cameraPermissionAction(
+    wasRequested: Boolean,
+    shouldShowRationale: Boolean,
+): CameraPermissionAction = if (wasRequested && !shouldShowRationale) {
+    CameraPermissionAction.OPEN_SETTINGS
+} else {
+    CameraPermissionAction.REQUEST
+}
 
 /** Camera2 reading screen with raw pass-through and EyeAlgo-enhanced preview targets. */
 class CameraFragment : Fragment() {
@@ -80,7 +95,7 @@ class CameraFragment : Fragment() {
         if (granted) {
             startPreviewIfReady()
         } else {
-            renderCameraFailure(getString(R.string.camera_permission_denied))
+            renderCameraPermissionFailure()
         }
     }
     private val photoPicker = registerForActivityResult(
@@ -98,9 +113,9 @@ class CameraFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View {
-        state?.let {
-            cameraPermissionRequested = it.getBoolean(STATE_CAMERA_PERMISSION_REQUESTED)
-        }
+        cameraPermissionRequested = state?.getBoolean(STATE_CAMERA_PERMISSION_REQUESTED) == true ||
+            requireContext().getSharedPreferences(PERMISSION_PREFERENCES, 0)
+                .getBoolean(KEY_CAMERA_PERMISSION_REQUESTED, false)
         _binding = FragmentCameraBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -158,7 +173,7 @@ class CameraFragment : Fragment() {
             if (hasCameraPermission()) {
                 startPreviewIfReady()
             } else {
-                requestCameraPermission()
+                handleCameraPermissionClick()
             }
         }
 
@@ -461,7 +476,7 @@ class CameraFragment : Fragment() {
             if (!cameraPermissionRequested) {
                 requestCameraPermission()
             } else {
-                renderCameraFailure(getString(R.string.camera_permission_denied))
+                renderCameraPermissionFailure()
             }
             return
         }
@@ -479,8 +494,35 @@ class CameraFragment : Fragment() {
     private fun requestCameraPermission() {
         if (!isResumed || cameraPermissionRequestInFlight) return
         cameraPermissionRequested = true
+        requireContext().getSharedPreferences(PERMISSION_PREFERENCES, 0)
+            .edit()
+            .putBoolean(KEY_CAMERA_PERMISSION_REQUESTED, true)
+            .apply()
         cameraPermissionRequestInFlight = true
         cameraPermission.launch(Manifest.permission.CAMERA)
+    }
+
+    private fun handleCameraPermissionClick() {
+        when (
+            cameraPermissionAction(
+                wasRequested = cameraPermissionRequested,
+                shouldShowRationale = shouldShowRequestPermissionRationale(Manifest.permission.CAMERA),
+            )
+        ) {
+            CameraPermissionAction.REQUEST -> requestCameraPermission()
+            CameraPermissionAction.OPEN_SETTINGS -> requireContext().openAppSettings()
+        }
+    }
+
+    private fun renderCameraPermissionFailure() {
+        val opensSettings = cameraPermissionAction(
+            wasRequested = cameraPermissionRequested,
+            shouldShowRationale = shouldShowRequestPermissionRationale(Manifest.permission.CAMERA),
+        ) == CameraPermissionAction.OPEN_SETTINGS
+        renderCameraFailure(
+            message = getString(R.string.camera_permission_denied),
+            actionText = if (opensSettings) R.string.open_app_settings else R.string.retry_camera,
+        )
     }
 
     private fun updateRawPreviewTransform(preview: TextureView) {
@@ -547,9 +589,13 @@ class CameraFragment : Fragment() {
         }
     }
 
-    private fun renderCameraFailure(message: String) {
+    private fun renderCameraFailure(
+        message: String,
+        @androidx.annotation.StringRes actionText: Int = R.string.retry_camera,
+    ) {
         if (_binding == null) return
         binding.alignmentHint.text = message
+        binding.cameraRetryButton.setText(actionText)
         binding.cameraRetryButton.isVisible = true
     }
 
@@ -619,6 +665,8 @@ class CameraFragment : Fragment() {
         private const val FOCUS_INDICATOR_DELAY_MS = 650L
         private const val FOCUS_INDICATOR_FADE_MS = 250L
         private const val STATE_CAMERA_PERMISSION_REQUESTED = "camera_permission_requested"
+        private const val PERMISSION_PREFERENCES = "permission_preferences"
+        private const val KEY_CAMERA_PERMISSION_REQUESTED = "camera_permission_requested"
 
         internal fun mapPreviewPointToSensor(
             touchX: Float,

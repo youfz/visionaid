@@ -5,6 +5,39 @@ import org.junit.Test
 
 class CameraFragmentTest {
     @Test
+    fun `camera permission is requested before it has been denied`() {
+        assertEquals(
+            CameraPermissionAction.REQUEST,
+            cameraPermissionAction(
+                wasRequested = false,
+                shouldShowRationale = false,
+            ),
+        )
+    }
+
+    @Test
+    fun `camera permission can be requested again while rationale is available`() {
+        assertEquals(
+            CameraPermissionAction.REQUEST,
+            cameraPermissionAction(
+                wasRequested = true,
+                shouldShowRationale = true,
+            ),
+        )
+    }
+
+    @Test
+    fun `permanently denied camera permission opens app settings`() {
+        assertEquals(
+            CameraPermissionAction.OPEN_SETTINGS,
+            cameraPermissionAction(
+                wasRequested = true,
+                shouldShowRationale = false,
+            ),
+        )
+    }
+
+    @Test
     fun `preview center maps to sensor center for every rotation`() {
         listOf(0, 90, 180, 270).forEach { rotation ->
             val point = CameraFragment.mapPreviewPointToSensor(
