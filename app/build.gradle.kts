@@ -1,8 +1,36 @@
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.Properties
+
 plugins {
     // Android 应用与 Kotlin 基础插件。
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
 }
+
+val localProperties = Properties().apply {
+    val localPropertiesFile = rootProject.file("local.properties")
+    if (localPropertiesFile.isFile) {
+        localPropertiesFile.inputStream().use(::load)
+    }
+}
+
+fun signingValue(name: String): String? = providers.gradleProperty(name).orNull
+    ?: providers.environmentVariable(name).orNull
+    ?: localProperties.getProperty(name)
+
+val releaseStoreFile = signingValue("VISIONAID_RELEASE_STORE_FILE") ?: "youkey.jks"
+val releaseStorePassword = signingValue("VISIONAID_RELEASE_STORE_PASSWORD")
+val releaseKeyAlias = signingValue("VISIONAID_RELEASE_KEY_ALIAS")
+val releaseKeyPassword = signingValue("VISIONAID_RELEASE_KEY_PASSWORD")
+val hasReleaseSigning = listOf(
+    releaseStorePassword,
+    releaseKeyAlias,
+    releaseKeyPassword,
+).all { !it.isNullOrBlank() }
+
+val buildTimestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
+val artifactFileName = "visionAid_$buildTimestamp"
 
 android {
     namespace = "com.you.visionaid"
@@ -30,9 +58,19 @@ android {
         buildConfigField("String", "API_BASE_URL", "\"${apiBaseUrl.trimEnd('/')}/\"")
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file(releaseStoreFile)
+            storePassword = releaseStorePassword.orEmpty()
+            keyAlias = releaseKeyAlias.orEmpty()
+            keyPassword = releaseKeyPassword.orEmpty()
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -58,6 +96,44 @@ android {
         }
         resources {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
+}
+
+android.applicationVariants.all {
+    outputs.all {
+        val apkOutput = this as com.android.build.gradle.internal.api.BaseVariantOutputImpl
+        apkOutput.outputFileName = "$artifactFileName.apk"
+    }
+}
+
+androidComponents {
+    onVariants(selector().all()) { variant ->
+        val bundleTaskName = "bundle${variant.name.replaceFirstChar(Char::uppercaseChar)}"
+        tasks.matching { it.name == bundleTaskName }.configureEach {
+            doLast {
+                val bundleDirectory = layout.buildDirectory
+                    .dir("outputs/bundle/${variant.name}")
+                    .get()
+                    .asFile
+                val generatedBundle = bundleDirectory.resolve("app-${variant.name}.aab")
+                check(generatedBundle.isFile) {
+                    "Expected App Bundle was not generated: ${generatedBundle.absolutePath}"
+                }
+                generatedBundle.copyTo(
+                    target = bundleDirectory.resolve("$artifactFileName.aab"),
+                    overwrite = true,
+                )
+            }
+        }
+    }
+}
+
+tasks.matching { it.name == "validateSigningRelease" }.configureEach {
+    doFirst {
+        check(hasReleaseSigning) {
+            "Release signing is not configured. Set the VISIONAID_RELEASE_* values " +
+                "in local.properties, Gradle properties, or environment variables."
         }
     }
 }

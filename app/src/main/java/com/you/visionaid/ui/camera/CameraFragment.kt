@@ -159,7 +159,8 @@ class CameraFragment : Fragment() {
         configureEnhancePreview()
         configurePreviewGestures()
 //        configureRawPreview()
-        binding.enhanceButton.setOnClickListener { VisualModeBottomSheet().show(childFragmentManager, "mode") }
+        binding.enhanceButton.setOnClickListener { showVisualModePicker() }
+        binding.previewModeButton.setOnClickListener { showVisualModePicker() }
         binding.captureButton.setOnClickListener { capturePhoto() }
         binding.retakeButton.setOnClickListener { photoViewModel.clearPhoto() }
         binding.galleryButton.setOnClickListener {
@@ -408,6 +409,7 @@ class CameraFragment : Fragment() {
         binding.alignmentHint.isVisible = !hasPhoto
         binding.zoomValue.isVisible = !hasPhoto
         binding.scanFrame.isVisible = !hasPhoto
+        binding.previewModeButton.isVisible = hasPhoto
         if (hasPhoto) binding.focusIndicator.isVisible = false
         val image = state.image
         if (image == null) {
@@ -445,8 +447,14 @@ class CameraFragment : Fragment() {
         binding.captureButton.isEnabled = !busy
         binding.galleryButton.isEnabled = !busy
         binding.enhanceButton.isEnabled = !busy
+        binding.previewModeButton.isEnabled = !busy
         binding.retakeButton.isEnabled = !busy
         binding.recognizeTextButton.isEnabled = !busy
+    }
+
+    private fun showVisualModePicker() {
+        if (childFragmentManager.findFragmentByTag(VISUAL_MODE_TAG) != null) return
+        VisualModeBottomSheet().show(childFragmentManager, VISUAL_MODE_TAG)
     }
 
     private fun clearDisplayedPhoto() {
@@ -662,6 +670,7 @@ class CameraFragment : Fragment() {
 
     companion object {
         private const val TAG = "CameraFragment"
+        private const val VISUAL_MODE_TAG = "visual_mode"
         private const val FOCUS_INDICATOR_DELAY_MS = 650L
         private const val FOCUS_INDICATOR_FADE_MS = 250L
         private const val STATE_CAMERA_PERMISSION_REQUESTED = "camera_permission_requested"
