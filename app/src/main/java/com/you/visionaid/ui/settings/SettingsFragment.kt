@@ -11,6 +11,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.core.content.ContextCompat
+import androidx.core.os.LocaleListCompat
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -34,7 +36,11 @@ class SettingsFragment : Fragment() {
     private val binding get() = requireNotNull(_binding)
     private val viewModel: ReadingViewModel by activityViewModels {
         val app = requireActivity().application as VisionAidApplication
-        ReadingViewModel.Factory(app.appContainer.ocrEngine, app.appContainer.fontPreferences)
+        ReadingViewModel.Factory(
+            app.appContainer.ocrEngine,
+            app.appContainer.fontPreferences,
+            resources,
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View {
@@ -98,7 +104,15 @@ class SettingsFragment : Fragment() {
             title = R.string.language,
             labels = options.map { getString(it.labelResource()) }.toTypedArray(),
             selected = viewModel.uiState.value.recognitionLanguage.ordinal,
-        ) { viewModel.setRecognitionLanguage(options[it]) }
+        ) {
+            val selected = options[it]
+            if (selected != viewModel.uiState.value.recognitionLanguage) {
+                viewModel.setRecognitionLanguage(selected)
+                AppCompatDelegate.setApplicationLocales(
+                    LocaleListCompat.forLanguageTags(selected.languageTag()),
+                )
+            }
+        }
     }
 
     private fun showSpeechSpeedDialog() {
@@ -163,4 +177,9 @@ class SettingsFragment : Fragment() {
 internal fun RecognitionLanguage.privacyPolicyUrlResource(): Int = when (this) {
     RecognitionLanguage.SIMPLIFIED_CHINESE -> R.string.privacy_policy_url_zh
     RecognitionLanguage.ENGLISH -> R.string.privacy_policy_url_en
+}
+
+internal fun RecognitionLanguage.languageTag(): String = when (this) {
+    RecognitionLanguage.SIMPLIFIED_CHINESE -> "zh-CN"
+    RecognitionLanguage.ENGLISH -> "en"
 }

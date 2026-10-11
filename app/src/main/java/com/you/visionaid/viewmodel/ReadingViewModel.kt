@@ -3,6 +3,9 @@ package com.you.visionaid.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import android.content.res.Resources
+import android.os.Build
+import com.you.visionaid.R
 import com.you.visionaid.domain.AppFontSize
 import com.you.visionaid.domain.DEFAULT_READING_FONT_SIZE_SP
 import com.you.visionaid.domain.FontPreferences
@@ -44,11 +47,15 @@ enum class OcrUiError {
 class ReadingViewModel(
     private val ocrEngine: OcrEngine,
     private val fontPreferences: FontPreferences,
+    initialLanguage: RecognitionLanguage = RecognitionLanguage.SIMPLIFIED_CHINESE,
+    initialText: String = ReadingUiState().text,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(
         ReadingUiState(
             appFontSize = fontPreferences.appFontSize,
             readingFontSizeSp = fontPreferences.readingFontSizeSp,
+            recognitionLanguage = initialLanguage,
+            text = initialText,
         ),
     )
     val uiState: StateFlow<ReadingUiState> = _uiState.asStateFlow()
@@ -116,11 +123,28 @@ class ReadingViewModel(
     class Factory(
         private val engine: OcrEngine,
         private val fontPreferences: FontPreferences,
+        private val resources: Resources,
     ) : ViewModelProvider.Factory {
         override fun <T : ViewModel> create(modelClass: Class<T>): T {
             require(modelClass.isAssignableFrom(ReadingViewModel::class.java))
+            val locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                resources.configuration.locales[0]
+            } else {
+                @Suppress("DEPRECATION")
+                resources.configuration.locale
+            }
+            val language = if (locale.language.equals("zh", ignoreCase = true)) {
+                RecognitionLanguage.SIMPLIFIED_CHINESE
+            } else {
+                RecognitionLanguage.ENGLISH
+            }
             @Suppress("UNCHECKED_CAST")
-            return ReadingViewModel(engine, fontPreferences) as T
+            return ReadingViewModel(
+                ocrEngine = engine,
+                fontPreferences = fontPreferences,
+                initialLanguage = language,
+                initialText = resources.getString(R.string.camera_sample_text),
+            ) as T
         }
     }
 

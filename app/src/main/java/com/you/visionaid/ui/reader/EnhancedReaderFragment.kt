@@ -30,7 +30,11 @@ class EnhancedReaderFragment : Fragment() {
     private var isSpeaking = false
     private val viewModel: ReadingViewModel by activityViewModels {
         val app = requireActivity().application as VisionAidApplication
-        ReadingViewModel.Factory(app.appContainer.ocrEngine, app.appContainer.fontPreferences)
+        ReadingViewModel.Factory(
+            app.appContainer.ocrEngine,
+            app.appContainer.fontPreferences,
+            resources,
+        )
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, state: Bundle?): View {
