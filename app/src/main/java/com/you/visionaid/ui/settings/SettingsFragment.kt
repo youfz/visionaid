@@ -1,7 +1,9 @@
 package com.you.visionaid.ui.settings
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,6 +48,7 @@ class SettingsFragment : Fragment() {
         binding.languageRow.setOnClickListener { showLanguageDialog() }
         binding.speechSpeedRow.setOnClickListener { showSpeechSpeedDialog() }
         binding.cameraPermissionRow.setOnClickListener { requireContext().openAppSettings() }
+        binding.privacyPolicyRow.setOnClickListener { openPrivacyPolicy() }
         binding.autoReadSwitch.setOnCheckedChangeListener { _, checked -> viewModel.setAutoSpeak(checked) }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -107,6 +110,12 @@ class SettingsFragment : Fragment() {
         ) { viewModel.setSpeechSpeed(options[it]) }
     }
 
+    private fun openPrivacyPolicy() {
+        val language = viewModel.uiState.value.recognitionLanguage
+        val url = getString(language.privacyPolicyUrlResource())
+        startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
+    }
+
     private fun showSingleChoice(
         @androidx.annotation.StringRes title: Int,
         labels: Array<String>,
@@ -148,4 +157,10 @@ class SettingsFragment : Fragment() {
         _binding = null
         super.onDestroyView()
     }
+}
+
+@androidx.annotation.StringRes
+internal fun RecognitionLanguage.privacyPolicyUrlResource(): Int = when (this) {
+    RecognitionLanguage.SIMPLIFIED_CHINESE -> R.string.privacy_policy_url_zh
+    RecognitionLanguage.ENGLISH -> R.string.privacy_policy_url_en
 }

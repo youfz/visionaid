@@ -63,6 +63,8 @@
     <string name="normal">正常</string>
     <string name="fast">快</string>
     <string name="privacy_settings">隐私政策</string>
+    <string name="privacy_policy_url_zh" translatable="false">https://docs.google.com/document/d/16dUoEQbi_T1mWKBnn20YgYBzSkQr_6bflfiwkQf8NHg/edit?usp=sharing</string>
+    <string name="privacy_policy_url_en" translatable="false">https://docs.google.com/document/d/1KiT05zVTKzz6jiVusRNB9hsI2nXZ2UX3Kl7nHOjifZo/edit?usp=sharing</string>
     <string name="camera_permission">相机权限</string>
     <string name="permission_granted">已允许</string>
     <string name="permission_not_granted">未允许</string>
