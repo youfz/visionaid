@@ -1,145 +1,106 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
     <title>VisionAid Privacy Policy</title>
     <style>
-        :root {
-            color-scheme: light dark;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-            line-height: 1.75;
-        }
-        body {
-            max-width: 860px;
-            margin: 0 auto;
-            padding: 32px 20px 64px;
-        }
+        :root { color-scheme: light dark; font-family: system-ui, -apple-system, "Segoe UI", sans-serif; line-height: 1.7; }
+        body { max-width: 880px; margin: auto; padding: 28px 20px 60px; }
         h1, h2 { line-height: 1.3; }
-        h1 { margin-bottom: 8px; }
-        h2 { margin-top: 32px; }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid currentColor;
-            text-align: left;
-            vertical-align: top;
-        }
-        .meta { margin-top: 0; }
-        .notice {
-            padding: 14px 16px;
-            border-left: 4px solid #356ae6;
-            background: color-mix(in srgb, #356ae6 10%, transparent);
-        }
-        @media (max-width: 640px) {
-            table, thead, tbody, tr, th, td { display: block; }
-            thead { display: none; }
-            td { border-bottom: 0; }
-            tr:last-child td:last-child { border-bottom: 1px solid currentColor; }
-        }
+        h2 { margin-top: 2rem; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #888; padding: .7rem; text-align: left; vertical-align: top; }
+        .summary { padding: 1rem; border-left: 4px solid #356ae6; background: rgba(53, 106, 230, .09); }
+        @media (max-width: 640px) { table { font-size: .92rem; } th, td { padding: .45rem; } }
     </style>
 </head>
 <body>
 <main>
     <h1>VisionAid Privacy Policy</h1>
-    <p class="meta">Effective date: September 15, 2026<br />Last updated: September 15, 2026</p>
+    <p>Effective date: October 11, 2026<br>Last updated: October 11, 2026</p>
 
-    <p>Welcome to VisionAid (package name: <code>com.you.visionaid</code>, hereinafter referred to as the “App”). The App is operated by <strong>[Enter the developer or company name exactly as shown in the Google Play developer profile]</strong> (hereinafter referred to as “we,” “us,” or “our”). This Privacy Policy explains how the App accesses, uses, stores, shares, and protects information related to you, as well as how you can manage that information.</p>
+    <p>This Privacy Policy applies to the VisionAid Android application (package name: <code>com.you.visionaid</code>, the “App”). The developer and operator of the App are both <strong>lanhunff</strong> (“we,” “us,” or “our”). This Policy explains how the App accesses, processes, stores, shares, and protects information related to you.</p>
 
-    <p class="notice"><strong>Summary:</strong> The current version does not require account registration and does not contain advertising or user behavior analytics. Neither the App itself nor its built-in image enhancement and OCR components upload photos, camera images, OCR-recognized text, or usage records to our servers or any third-party servers. Image enhancement and text recognition are performed locally on your device. For information about how data is processed when you actively use external features such as the system text-to-speech (TTS) service, please see Section 4 of this Policy.</p>
+    <p class="summary"><strong>Summary:</strong> The current version requires no registration or sign-in, contains no advertising, behavior-analytics, or crash-reporting SDKs, and does not request internet permission. Camera images, images you select, image enhancement, and OCR are processed locally on your device. The App does not upload this content to our servers or EyeAlgo servers. When you actively use system text-to-speech, the clipboard, the photo picker, or system backup, the relevant data may be processed by Android, your device manufacturer, or a third-party service you select, as described below.</p>
 
-    <h2>1. How We Process Information</h2>
-    <p>To provide photography, image enhancement, text recognition, and read-aloud features, the App processes the following information on your device:</p>
-
+    <h2>1. Information We Access and Process</h2>
     <table>
-        <thead>
-        <tr>
-            <th>Information or Data</th>
-            <th>Purpose of Processing</th>
-            <th>How It Is Processed and Stored</th>
-        </tr>
-        </thead>
+        <thead><tr><th>Information</th><th>Purpose</th><th>Processing and Retention</th></tr></thead>
         <tbody>
         <tr>
             <td>Live camera images and captured images</td>
-            <td>To provide a live preview, image enhancement, photography, and OCR text recognition.</td>
-            <td>Processed locally on your device and primarily stored temporarily in memory. The App does not automatically save captured images to your photo library or upload them to a server.</td>
+            <td>To provide live preview, image enhancement, image capture, and OCR text recognition.</td>
+            <td>Processed only on your device and held primarily temporarily in memory. The App does not automatically save images to your photo library or upload them to a server.</td>
         </tr>
         <tr>
-            <td>Images you select through the system photo picker</td>
-            <td>To provide image enhancement and OCR text recognition.</td>
-            <td>The App accesses only the images you explicitly select and does not request permission to read your entire photo library. Images are processed locally on your device and are not uploaded to a server.</td>
+            <td>Images selected through the system photo picker and their orientation metadata</td>
+            <td>To display images correctly and provide image enhancement and OCR.</td>
+            <td>The App can access only images you explicitly select and authorize, not your entire photo library. Content is processed temporarily on your device and is not uploaded to a server.</td>
         </tr>
         <tr>
             <td>Text produced by OCR</td>
-            <td>To display recognition results, adjust font size, copy text, and read text aloud.</td>
-            <td>Stored only in memory during the current App session. The App does not create a recognition-history database or upload the text to our servers.</td>
+            <td>To display and format results, adjust text size, copy text, and read text aloud.</td>
+            <td>Held in memory in the current App process. The current version does not create a recognition-history database or upload text to our servers.</td>
         </tr>
         <tr>
-            <td>App preferences</td>
-            <td>To remember the interface font size, reading font size, and whether you have completed the first-use guide.</td>
-            <td>Stored in the App’s private local storage until you clear the App’s data or uninstall it.</td>
+            <td>Local App settings</td>
+            <td>To remember App and reading text sizes, completion of first-use onboarding, and whether camera permission was previously requested.</td>
+            <td>Stored in the App's private SharedPreferences, generally until you clear the App's data or uninstall it. System backup may retain a separate copy.</td>
         </tr>
         <tr>
-            <td>Local runtime logs</td>
-            <td>To diagnose OCR, camera, or image-processing failures.</td>
-            <td>The current implementation may record processing duration, the number of recognized regions, and error information in the device’s system logs. It does not intentionally log complete images or the full recognized text, and the App does not upload these logs.</td>
+            <td>Local device runtime logs</td>
+            <td>To diagnose OCR, camera, and image-processing problems.</td>
+            <td>Android system logs may contain processing duration, recognized-region counts, and error information. The App does not intentionally log complete images or full recognized text and does not upload these logs.</td>
         </tr>
         </tbody>
     </table>
 
     <h2>2. Device Permissions</h2>
-    <p><strong>Camera permission (CAMERA):</strong> Used to display a live camera image, take photos, enhance images, and recognize text. The App accesses the camera only after you use a relevant feature and grant permission. You can revoke permission at any time under “Settings—Apps—VisionAid—Permissions” on your device. After permission is revoked, camera-related features will no longer work, but features that do not rely on the camera, such as importing images through the system photo picker, will remain available.</p>
+    <p><strong>Camera permission (CAMERA):</strong> Used to display and enhance a live camera feed, capture images, and recognize text in them. The App can access the camera only after you grant permission. You may revoke it at any time in Android's App permission settings. Camera features will then stop working, while features that do not depend on the camera, such as importing an image through the system photo picker, will remain available.</p>
+    <p>The current version does not request photo-library, microphone, location, contacts, phone, advertising-identifier, or internet permission. The system photo picker gives the App read access only to images you select.</p>
 
-    <p>The current release configuration does not enable internet permission. If a future version enables network features or changes how information is processed, we will update this Policy and the Google Play Data safety declaration before the feature is released, and we will obtain your separate consent when required by law or platform policy.</p>
-
-    <h2>3. Local Processing, Collection, and Sharing</h2>
-    <p>The App uses locally integrated EyeAlgo image-enhancement and OCR components to process images and text. Based on the code and permission configuration of the current version, these components run on your device. The App does not use them to transmit your images or recognition results to the EyeAlgo provider or any other server.</p>
-
-    <p>We do not operate a backend service that receives data from the App. We do not collect or share your personal information, photos, recognized text, device identifiers, precise location, contacts, financial information, or App usage records. The App does not contain advertising SDKs, analytics SDKs, or crash-reporting SDKs.</p>
+    <h2>3. Local Processing, Data Collection, and Sharing</h2>
+    <p>The App integrates EyeAlgo image-enhancement and OCR components. Based on the current implementation and permission configuration, these components run on your device. We do not operate a backend that receives App data, and the App does not use these components to send images or recognition results to the EyeAlgo provider or any other server.</p>
+    <p>The current version does not transmit personal information, images, recognized text, device identifiers, location, contacts, financial information, or App activity from the App to us or third-party servers. Accordingly, under Google Play's Data safety definition of “collection,” the App does not collect or share user data. We do not sell user data.</p>
 
     <h2>4. System Features and External Services</h2>
-    <p>When you actively use the following features, data may be further processed by the Android system or other apps selected on your device:</p>
+    <p>The following processing occurs only when you enable the relevant system feature or take the relevant action:</p>
     <ul>
-        <li><strong>Photo picker:</strong> Browsing images and selecting which images to authorize are handled by the Android system or the media provider configured by the system. The App can read only the images you explicitly select and authorize.</li>
-        <li><strong>System clipboard:</strong> When you tap “Copy,” the recognized text is written to the system clipboard. Clipboard contents are managed by the Android system and may be read by other apps that you have permitted to access the clipboard. You can remove the text by copying other content or using a clearing feature provided by the system.</li>
-        <li><strong>Text-to-speech (TTS):</strong> When you use “Read Aloud” or enable “Auto Read Aloud,” the recognized text is sent to the TTS engine currently selected on your device to generate speech. The TTS engine may be provided by the device manufacturer or a third party. Whether it connects to the internet, how it stores data, and how it protects data depend on that engine’s settings and privacy policy. You can select or change the TTS engine in system settings, or choose not to use the read-aloud feature.</li>
-        <li><strong>Android backup and device migration:</strong> If you enable system backup or device migration on your device, the Android system may back up or migrate the App’s local preferences and private files according to your system settings. This process is controlled by your operating system or backup service provider, and we cannot access the backup copies it stores.</li>
-        <li><strong>Google Play:</strong> When you download or update the App through Google Play, Google may process information related to downloads, devices, security, and diagnostics in accordance with its own privacy policy. This information is not collected directly by the App.</li>
+        <li><strong>Photo picker:</strong> Browsing and authorization are handled by Android or the media provider configured on your device. The App receives access only to images you select.</li>
+        <li><strong>System clipboard:</strong> When you tap “Copy,” recognized text is placed on the system clipboard. Android manages the clipboard, and other apps with applicable access may read it. You can replace it by copying other content or clear it using a system feature.</li>
+        <li><strong>Text-to-speech (TTS):</strong> When you use read-aloud or automatic reading, recognized text is provided to the TTS engine currently selected on your device to generate speech. That engine may be supplied by your device manufacturer or a third party and may process data online under its own settings and privacy policy. You can select or replace the TTS engine in system settings or choose not to use read-aloud features.</li>
+        <li><strong>Android backup and device migration:</strong> Because the App permits system backup, Android or a backup service may back up or migrate local preferences and private App files when you enable backup or migration. The relevant provider controls this process; we cannot access copies it stores.</li>
+        <li><strong>Google Play:</strong> When you download or update the App through Google Play, Google may process download, device, security, and diagnostic information under its own privacy policy. The App does not directly collect that information.</li>
     </ul>
 
-    <h2>5. Information Retention and Deletion</h2>
+    <h2>5. Retention and Deletion</h2>
     <ul>
-        <li>Live camera images, captured or imported images, enhanced results, and OCR text are primarily processed temporarily in memory. They are generally released when the content is replaced, the relevant screen is closed, or the App process ends.</li>
-        <li>App preferences, such as font sizes and first-use guide status, remain stored locally on your device until you clear the App’s data or uninstall it.</li>
-        <li>To provide offline OCR, the App installs model files included in the installation package into the App’s private directory. These models do not contain your personal information and are deleted when you clear the App’s data or uninstall it.</li>
-        <li>Data written to the system clipboard or sent to a TTS engine is managed by the applicable system feature or service. You should manage and delete that data through system settings or the methods provided by the relevant service.</li>
+        <li>Live camera images, captured or imported images, enhanced results, and OCR text are processed primarily temporarily in memory and are generally released when content is replaced, the relevant screen closes, or the App process ends.</li>
+        <li>App settings remain locally on your device until you clear the App's data or uninstall the App.</li>
+        <li>Models required for offline OCR are installed from the App package into the App's private directory. They do not contain your personal information and are deleted when you clear App data or uninstall the App.</li>
+        <li>Data in the clipboard, TTS engine, or system backup is managed by the relevant system feature or service. Use the corresponding system or service settings to manage and delete it.</li>
     </ul>
-
-    <p>The App does not offer account registration and does not create user profiles on our servers. Therefore, there is no account or server-side user data for which you need to request deletion from us. To delete data stored by the App on your device, you can select “Clear storage/Clear data” on the Android App info screen or uninstall the App. Copies stored in a system backup should be managed through your system account or backup-service settings.</p>
+    <p>The App does not offer accounts, so there is no account or server-side user profile for us to delete. To delete data stored by the App on your device, choose “Clear storage/Clear data” on the Android App info screen or uninstall the App.</p>
 
     <h2>6. Information Security</h2>
-    <p>We take measures appropriate to the App’s current data-processing practices to protect information. These measures include storing local preferences in the Android app sandbox, requesting camera permission only when needed, using the system photo picker to limit image access to the minimum necessary scope, and disabling internet permission in the current version. Please note that no device or software environment can be guaranteed to be completely secure. You should also protect access to your device and carefully choose your TTS engine and the apps that can access the clipboard.</p>
+    <p>We use measures appropriate to the App's current processing, including storing local settings in the Android App sandbox, requesting camera permission when needed, limiting image access through the system photo picker, and not enabling internet permission in the current version. No device or software environment can be guaranteed completely secure. Protect access to your device and carefully choose your TTS engine and apps that can access the clipboard.</p>
 
-    <h2>7. Protection of Minors</h2>
-    <p>The App is an assistive reading tool intended for general users and is not a service directed specifically at children. Minors should use the App under the guidance of a parent or other guardian. Because the App does not collect user data on our servers, we do not create profiles based on users’ ages. If we determine that future features involve minors’ personal information, we will provide appropriate notice, obtain consent, and implement protective measures as required by law.</p>
+    <h2>7. Children's Privacy</h2>
+    <p>The App is a general-audience assistive reading tool and is not specifically designed for children. We do not knowingly collect children's personal information through an App server because the current version does not transmit user data to our servers. Minors should use the App with the guidance of a parent or guardian. If the App later targets children or changes its data practices, we will comply with applicable children's privacy laws and Google Play Families policies and update this Policy and related disclosures before release.</p>
 
     <h2>8. Your Choices and Rights</h2>
-    <p>You may choose not to grant camera permission or may revoke it, choose not to select any images from your photo library, choose not to use the copy or read-aloud features, and clear the App’s data or uninstall the App at any time. If applicable data-protection laws grant you rights such as access, correction, deletion, restriction of processing, withdrawal of consent, or lodging a complaint, you may contact us using the details below. Because the current version does not collect user data on a server, we generally have no server records that can be used to identify you or respond to a request for a copy of your data.</p>
+    <p>You may decline or revoke camera permission, choose not to select photo-library images, choose not to use copy or read-aloud features, and clear App data or uninstall the App at any time. Where applicable law gives you rights of access, correction, deletion, restriction, withdrawal of consent, or complaint, you may contact us at the address below. Because the current version does not collect user data on our servers, we generally have no server record with which to identify you or provide a copy of your data.</p>
 
     <h2>9. Changes to This Policy</h2>
-    <p>We may update this Policy in response to changes in features, technology, laws, or platform rules. If material changes occur, we will notify you through an appropriate method within the App or on the page where this Policy is published, and we will update the date at the top of the page. We encourage you to review this Policy periodically. Unless otherwise required by law, an updated Policy takes effect on the effective date stated in it.</p>
+    <p>We may update this Policy when features, technology, laws, or platform rules change. For material changes, we will provide notice through this Policy's publication page or an appropriate in-App method and update the date above. If a future version enables networking, advertising, analytics, accounts, or otherwise changes data handling, we will update this Policy and the Google Play Data safety declaration before release and obtain separate consent where required by law or platform policy.</p>
 
     <h2>10. Contact Us</h2>
-    <p>If you have any questions, comments, or complaints about this Privacy Policy or how the App processes information, please contact:</p>
     <ul>
-        <li>Operator: <strong>[Enter the developer or company name exactly as shown in the Google Play developer profile]</strong></li>
-        <li>Privacy contact email: <strong>[Enter a long-term, valid privacy contact email address]</strong></li>
-        <li>Contact address: <strong>[Enter the country/region where the operator is located and, if applicable, the full contact address]</strong></li>
+        <li>Developer: <strong>lanhunff</strong></li>
+        <li>Operator: <strong>lanhunff</strong></li>
+        <li>Privacy contact email: <a href="mailto:weif0608@gmail.com">weif0608@gmail.com</a></li>
     </ul>
 </main>
 </body>
