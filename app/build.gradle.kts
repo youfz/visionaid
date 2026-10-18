@@ -34,14 +34,14 @@ val artifactFileName = "visionAid_$buildTimestamp"
 
 android {
     namespace = "com.you.visionaid"
-    compileSdk = 34
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.you.visionaid"
         minSdk = 26
-        targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        targetSdk = 36
+        versionCode = 1002
+        versionName = "1.0.2"
 
         ndk {
             abiFilters += "arm64-v8a"
@@ -69,8 +69,12 @@ android {
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
+            isShrinkResources = true
             signingConfig = signingConfigs.getByName("release")
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
